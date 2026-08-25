@@ -952,7 +952,7 @@
       <div class="flex items-center gap-4 text-slate-500">
         <span>&copy; 2026 Data Scout Solutions.</span>
         <!-- Botón secreto para abrir el panel de administración -->
-        <button id="btnOpenAdmin" class="text-slate-600 hover:text-cyan-400 text-xs flex items-center gap-1.5 transition p-1" title="Panel de Auditoría y Métricas (Admin)">
+        <button id="btnOpenAdmin" class="text-slate-600 hover:text-cyan-400 text-xs flex items-center gap-1.5 transition p-1" title="Acceso">
           <i class="fa-solid fa-shield-halved text-[11px]"></i>
           <span>Auditoría</span>
         </button>
@@ -990,23 +990,27 @@
         </button>
       </div>
 
-      <!-- VIEW A: PIN LOGIN PROMPT -->
+      <!-- VIEW A: SECURE PIN PASS LOGIN PROMPT (SIN PISTAS) -->
       <div id="adminLoginView" class="p-8 sm:p-12 text-center max-w-md mx-auto">
-        <div class="w-16 h-16 rounded-3xl bg-cyan-500/10 text-cyan-400 mx-auto flex items-center justify-center text-2xl mb-4 border border-cyan-500/20">
+        <div class="w-16 h-16 rounded-3xl bg-slate-800 text-cyan-400 mx-auto flex items-center justify-center text-2xl mb-4 border border-white/10">
           <i class="fa-solid fa-lock"></i>
         </div>
-        <h4 class="font-display font-bold text-xl text-white mb-2">Acceso de Administrador</h4>
-        <p class="text-xs text-slate-400 mb-6">Ingresa tu PIN de seguridad para acceder a las métricas de tráfico y solicitudes de clientes.</p>
+        <h4 class="font-display font-bold text-xl text-white mb-2">Acceso Restringido</h4>
+        <p class="text-xs text-slate-400 mb-6">Área confidencial de administración.</p>
 
         <form id="adminLoginForm" class="space-y-4">
-          <input type="password" id="adminPinInput" required placeholder="PIN de Seguridad (ej: 8024)" class="w-full bg-slate-950 text-center font-mono text-lg tracking-widest text-cyan-400 px-4 py-3.5 rounded-xl border border-white/15 focus:outline-none focus:border-cyan-400 placeholder:text-slate-600 placeholder:text-xs">
+          <input type="password" id="adminPinInput" required placeholder="PIN Pass" autocomplete="off" class="w-full bg-slate-950 text-center font-mono text-lg tracking-widest text-cyan-400 px-4 py-3.5 rounded-xl border border-white/15 focus:outline-none focus:border-cyan-400 placeholder:text-slate-600 placeholder:text-sm">
           
           <div id="adminLoginError" class="hidden text-xs text-red-400 font-semibold">
-            PIN incorrecto. Por favor intenta de nuevo.
+            PIN Pass incorrecto.
           </div>
 
-          <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-black text-sm hover:brightness-110 transition">
-            Ingresar al Panel &rarr;
+          <div id="adminLockoutWarning" class="hidden text-xs text-amber-400 font-semibold p-3 rounded-xl bg-amber-500/10 border border-amber-500/20">
+            <i class="fa-solid fa-triangle-exclamation mr-1"></i> <span id="lockoutMsgText">Acceso bloqueado por seguridad.</span>
+          </div>
+
+          <button type="submit" id="btnAdminSubmit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-black text-sm hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed">
+            Ingresar &rarr;
           </button>
         </form>
       </div>

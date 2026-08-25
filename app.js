@@ -3,8 +3,10 @@
  * Controls: Dynamic Spotlights, FAQs Accordion, Chart.js Dashboard, AutoTask Simulator, SheetJS Real Excel Downloader, WhatsApp & Admin Suite
  */
 
-// Global state for Admin & Telemetry
-const ADMIN_PIN = '8024'; // PIN por defecto de administrador (últimos 4 dígitos del teléfono)
+// Global Security & State (PIN de Acceso Privado)
+const ADMIN_PIN = '80242480'; 
+const MAX_FAILED_ATTEMPTS = 2;
+const LOCKOUT_MINUTES = 30;
 const WHATSAPP_PHONE = '59891802402'; // Uruguay
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -150,8 +152,22 @@ function initTelemetryTracker() {
 }
 
 /* ==========================================================================
-   2. ADMIN AUDIT SUITE & MODAL CONTROLLER
+   2. ADMIN AUDIT SUITE & SECURE PIN PASS CONTROLLER (2-ATTEMPT LOCKOUT)
    ========================================================================== */
+function getLockoutMinutesRemaining() {
+  const lockoutTimestamp = localStorage.getItem('datascout_admin_lockout_until');
+  if (lockoutTimestamp) {
+    const remainingMs = parseInt(lockoutTimestamp) - Date.now();
+    if (remainingMs > 0) {
+      return Math.ceil(remainingMs / (60 * 1000));
+    } else {
+      localStorage.removeItem('datascout_admin_lockout_until');
+      localStorage.removeItem('datascout_admin_failed_count');
+    }
+  }
+  return 0;
+}
+
 function initAdminAuditSuite() {
   const btnOpenAdmin = document.getElementById('btnOpenAdmin');
   const btnCloseAdmin = document.getElementById('btnCloseAdminModal');
@@ -159,6 +175,9 @@ function initAdminAuditSuite() {
   const adminLoginForm = document.getElementById('adminLoginForm');
   const adminPinInput = document.getElementById('adminPinInput');
   const adminLoginError = document.getElementById('adminLoginError');
+  const adminLockoutWarning = document.getElementById('adminLockoutWarning');
+  const lockoutMsgText = document.getElementById('lockoutMsgText');
+  const btnAdminSubmit = document.getElementById('btnAdminSubmit');
   const adminLoginView = document.getElementById('adminLoginView');
   const adminDashboardView = document.getElementById('adminDashboardView');
   const btnLogoutAdmin = document.getElementById('btnLogoutAdmin');
@@ -215,11 +234,26 @@ function initAdminAuditSuite() {
   function showLoginView() {
     if (adminLoginView) adminLoginView.classList.remove('hidden');
     if (adminDashboardView) adminDashboardView.classList.add('hidden');
-    if (adminPinInput) {
-      adminPinInput.value = '';
-      setTimeout(() => adminPinInput.focus(), 150);
-    }
     if (adminLoginError) adminLoginError.classList.add('hidden');
+
+    const minutesRemaining = getLockoutMinutesRemaining();
+    if (minutesRemaining > 0) {
+      if (adminLockoutWarning) adminLockoutWarning.classList.remove('hidden');
+      if (lockoutMsgText) lockoutMsgText.innerText = `Acceso bloqueado por seguridad (${minutesRemaining} min restantes).`;
+      if (adminPinInput) {
+        adminPinInput.disabled = true;
+        adminPinInput.value = '';
+      }
+      if (btnAdminSubmit) btnAdminSubmit.disabled = true;
+    } else {
+      if (adminLockoutWarning) adminLockoutWarning.classList.add('hidden');
+      if (adminPinInput) {
+        adminPinInput.disabled = false;
+        adminPinInput.value = '';
+        setTimeout(() => adminPinInput.focus(), 150);
+      }
+      if (btnAdminSubmit) btnAdminSubmit.disabled = false;
+    }
   }
 
   function showDashboardView() {
@@ -231,12 +265,49 @@ function initAdminAuditSuite() {
   if (adminLoginForm) {
     adminLoginForm.addEventListener('submit', (e) => {
       e.preventDefault();
+
+      const minutesRemaining = getLockoutMinutesRemaining();
+      if (minutesRemaining > 0) {
+        if (adminLockoutWarning) adminLockoutWarning.classList.remove('hidden');
+        if (lockoutMsgText) lockoutMsgText.innerText = `Acceso bloqueado por seguridad (${minutesRemaining} min restantes).`;
+        return;
+      }
+
       const enteredPin = adminPinInput.value.trim();
-      if (enteredPin === ADMIN_PIN || enteredPin === 'datascout2026') {
+
+      if (enteredPin === ADMIN_PIN) {
+        // Successful login: reset failed attempts
+        localStorage.removeItem('datascout_admin_failed_count');
+        localStorage.removeItem('datascout_admin_lockout_until');
         sessionStorage.setItem('datascout_admin_auth', 'true');
         showDashboardView();
       } else {
-        if (adminLoginError) adminLoginError.classList.remove('hidden');
+        // Failed login: increment failed count
+        let failedCount = parseInt(localStorage.getItem('datascout_admin_failed_count') || '0') + 1;
+        localStorage.setItem('datascout_admin_failed_count', failedCount.toString());
+
+        if (failedCount >= MAX_FAILED_ATTEMPTS) {
+          const lockoutUntil = Date.now() + (LOCKOUT_MINUTES * 60 * 1000);
+          localStorage.setItem('datascout_admin_lockout_until', lockoutUntil.toString());
+          if (adminLoginError) adminLoginError.classList.add('hidden');
+          if (adminLockoutWarning) adminLockoutWarning.classList.remove('hidden');
+          if (lockoutMsgText) lockoutMsgText.innerText = `Acceso bloqueado por seguridad (${LOCKOUT_MINUTES} min).`;
+          if (adminPinInput) {
+            adminPinInput.disabled = true;
+            adminPinInput.value = '';
+          }
+          if (btnAdminSubmit) btnAdminSubmit.disabled = true;
+          logAuditEvent('BLOQUEO_SEGURIDAD_ADMIN', { reason: '2 intentos fallidos' });
+        } else {
+          if (adminLoginError) {
+            adminLoginError.innerText = `PIN Pass incorrecto (1 intento restante antes del bloqueo).`;
+            adminLoginError.classList.remove('hidden');
+          }
+          if (adminPinInput) {
+            adminPinInput.value = '';
+            adminPinInput.focus();
+          }
+        }
       }
     });
   }
