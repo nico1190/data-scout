@@ -949,8 +949,13 @@
         <a href="#contacto" class="hover:text-white transition">Contacto</a>
       </div>
 
-      <div class="text-slate-500">
-        &copy; 2026 Data Scout Solutions. Todos los derechos reservados.
+      <div class="flex items-center gap-4 text-slate-500">
+        <span>&copy; 2026 Data Scout Solutions.</span>
+        <!-- Botón secreto para abrir el panel de administración -->
+        <button id="btnOpenAdmin" class="text-slate-600 hover:text-cyan-400 text-xs flex items-center gap-1.5 transition p-1" title="Panel de Auditoría y Métricas (Admin)">
+          <i class="fa-solid fa-shield-halved text-[11px]"></i>
+          <span>Auditoría</span>
+        </button>
       </div>
     </div>
   </footer>
@@ -959,6 +964,177 @@
   <a id="floatingWhatsapp" href="https://wa.me/59891802402?text=Hola!%20Vi%20tu%20web%20de%20Data%20Scout%20y%20quiero%20hacerte%20una%20consulta%20para%20mi%20empresa" target="_blank" rel="noopener noreferrer" class="whatsapp-float-btn" title="Chatear por WhatsApp">
     <i class="fa-brands fa-whatsapp"></i>
   </a>
+
+  <!-- ==========================================================================
+       MODAL DE AUDITORÍA Y PANEL DE ADMINISTRACIÓN (DATA SCOUT CONTROL CENTER)
+       ========================================================================== -->
+  <div id="adminModal" class="hidden fixed inset-0 z-50 bg-slate-950/90 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+    
+    <!-- MODAL CONTENT CONTAINER -->
+    <div class="relative w-full max-w-5xl bg-slate-900 border border-cyan-500/30 rounded-3xl shadow-2xl shadow-cyan-500/10 overflow-hidden my-8">
+      
+      <!-- TOP BAR -->
+      <div class="bg-slate-950 px-6 py-4 border-b border-white/10 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
+            <i class="fa-solid fa-chart-line text-sm"></i>
+          </div>
+          <div>
+            <h3 class="font-display font-bold text-white text-base">Data Scout &bull; Centro de Control & Auditoría</h3>
+            <p class="text-[11px] text-slate-400">Telemetría de visitas en tiempo real y registro de peticiones</p>
+          </div>
+        </div>
+
+        <button id="btnCloseAdminModal" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <!-- VIEW A: PIN LOGIN PROMPT -->
+      <div id="adminLoginView" class="p-8 sm:p-12 text-center max-w-md mx-auto">
+        <div class="w-16 h-16 rounded-3xl bg-cyan-500/10 text-cyan-400 mx-auto flex items-center justify-center text-2xl mb-4 border border-cyan-500/20">
+          <i class="fa-solid fa-lock"></i>
+        </div>
+        <h4 class="font-display font-bold text-xl text-white mb-2">Acceso de Administrador</h4>
+        <p class="text-xs text-slate-400 mb-6">Ingresa tu PIN de seguridad para acceder a las métricas de tráfico y solicitudes de clientes.</p>
+
+        <form id="adminLoginForm" class="space-y-4">
+          <input type="password" id="adminPinInput" required placeholder="PIN de Seguridad (ej: 8024)" class="w-full bg-slate-950 text-center font-mono text-lg tracking-widest text-cyan-400 px-4 py-3.5 rounded-xl border border-white/15 focus:outline-none focus:border-cyan-400 placeholder:text-slate-600 placeholder:text-xs">
+          
+          <div id="adminLoginError" class="hidden text-xs text-red-400 font-semibold">
+            PIN incorrecto. Por favor intenta de nuevo.
+          </div>
+
+          <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-black text-sm hover:brightness-110 transition">
+            Ingresar al Panel &rarr;
+          </button>
+        </form>
+      </div>
+
+      <!-- VIEW B: FULL AUDIT & TELEMETRY DASHBOARD -->
+      <div id="adminDashboardView" class="hidden p-6 sm:p-8 space-y-6 max-h-[80vh] overflow-y-auto">
+        
+        <!-- KPI METRICS SUMMARY GRID -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="admin-card p-4">
+            <span class="text-xs text-slate-400 font-semibold flex items-center gap-1.5">
+              <i class="fa-solid fa-users text-cyan-400"></i> Total Visitas
+            </span>
+            <div id="metricTotalVisits" class="font-display text-2xl font-black text-white mt-1">0</div>
+            <div class="text-[10px] text-emerald-400 font-medium">Registros capturados</div>
+          </div>
+
+          <div class="admin-card p-4">
+            <span class="text-xs text-slate-400 font-semibold flex items-center gap-1.5">
+              <i class="fa-solid fa-envelope-open-text text-emerald-400"></i> Peticiones / Cotizaciones
+            </span>
+            <div id="metricTotalLeads" class="font-display text-2xl font-black text-emerald-400 mt-1">0</div>
+            <div class="text-[10px] text-slate-400 font-medium">Formularios enviados</div>
+          </div>
+
+          <div class="admin-card p-4">
+            <span class="text-xs text-slate-400 font-semibold flex items-center gap-1.5">
+              <i class="fa-solid fa-file-excel text-emerald-400"></i> Descargas de Excel
+            </span>
+            <div id="metricTotalDownloads" class="font-display text-2xl font-black text-white mt-1">0</div>
+            <div class="text-[10px] text-cyan-400 font-medium">Pruebas de Demo 1</div>
+          </div>
+
+          <div class="admin-card p-4">
+            <span class="text-xs text-slate-400 font-semibold flex items-center gap-1.5">
+              <i class="fa-brands fa-whatsapp text-emerald-400"></i> Clics a WhatsApp
+            </span>
+            <div id="metricTotalWhatsAppClicks" class="font-display text-2xl font-black text-blue-400 mt-1">0</div>
+            <div class="text-[10px] text-slate-400 font-medium">Contactos directos</div>
+          </div>
+        </div>
+
+        <!-- DASHBOARD ACTION BUTTONS & TABS -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/10">
+          <!-- Tabs -->
+          <div class="flex items-center gap-2">
+            <button id="tabAdminLeads" class="admin-tab-btn active px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-cyan-600 text-white">
+              <i class="fa-solid fa-inbox"></i>
+              <span>Peticiones de Clientes (<span id="countLeadsBadge">0</span>)</span>
+            </button>
+            <button id="tabAdminVisits" class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5 bg-slate-800">
+              <i class="fa-solid fa-globe"></i>
+              <span>Registro de Visitas (<span id="countVisitsBadge">0</span>)</span>
+            </button>
+            <button id="tabAdminLogs" class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5 bg-slate-800">
+              <i class="fa-solid fa-terminal"></i>
+              <span>Bitácora de Eventos</span>
+            </button>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex items-center gap-2">
+            <button id="btnExportAuditExcel" class="px-3.5 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 text-xs font-bold flex items-center gap-1.5 transition">
+              <i class="fa-solid fa-file-excel"></i>
+              <span>Exportar a Excel (.xlsx)</span>
+            </button>
+            <button id="btnClearAuditData" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 text-xs font-bold transition" title="Limpiar historial">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+            <button id="btnLogoutAdmin" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition">
+              <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT 1: LEADS & PETICIONES -->
+        <div id="contentAdminLeads" class="space-y-3">
+          <div class="overflow-x-auto rounded-2xl border border-white/10">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-950 text-slate-400 uppercase text-[10px] font-bold tracking-wider">
+                <tr>
+                  <th class="p-3">Fecha y Hora</th>
+                  <th class="p-3">Nombre & Empresa</th>
+                  <th class="p-3">Rubro</th>
+                  <th class="p-3">Solución</th>
+                  <th class="p-3">Problema / Mensaje</th>
+                  <th class="p-3 text-center">Acción</th>
+                </tr>
+              </thead>
+              <tbody id="tableBodyLeads" class="divide-y divide-white/5 text-slate-300">
+                <!-- Injected via app.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT 2: VISITAS Y DISPOSITIVOS -->
+        <div id="contentAdminVisits" class="hidden space-y-3">
+          <div class="overflow-x-auto rounded-2xl border border-white/10">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-950 text-slate-400 uppercase text-[10px] font-bold tracking-wider">
+                <tr>
+                  <th class="p-3">Fecha y Hora</th>
+                  <th class="p-3">Ubicación / IP</th>
+                  <th class="p-3">Dispositivo / SO</th>
+                  <th class="p-3">Navegador</th>
+                  <th class="p-3">Resolución</th>
+                  <th class="p-3">Origen (Referrer)</th>
+                </tr>
+              </thead>
+              <tbody id="tableBodyVisits" class="divide-y divide-white/5 text-slate-300 font-mono text-[11px]">
+                <!-- Injected via app.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT 3: LOG DE ACCIONES EN VIVO -->
+        <div id="contentAdminLogs" class="hidden space-y-3">
+          <div class="mac-terminal p-4 font-mono text-xs text-slate-300 h-64 overflow-y-auto space-y-1.5" id="terminalAdminLogs">
+            <!-- Injected via app.js -->
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
 
   <!-- App Script -->
   <script src="app.js"></script>

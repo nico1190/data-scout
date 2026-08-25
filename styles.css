@@ -1,6 +1,6 @@
 /* ==========================================================================
-   DATACORE - ELITE AWWWARDS-GRADE STYLESHEET (AWARD WINNING SAAS DESIGN)
-   Aesthetic: Ultra Dark Neo-Glassmorphism + Crisp Apple Light Theme
+   DATA SCOUT - ELITE AWWWARDS-GRADE STYLESHEET (AWARD WINNING SAAS DESIGN)
+   Aesthetic: Ultra Dark Neo-Glassmorphism + Crisp Apple Light Theme + Admin Suite
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
@@ -30,7 +30,7 @@
 }
 
 /* ==========================================================================
-   PERFECT HIGH-CONTRAST LIGHT THEME (Apple / Stripe High Contrast Standards)
+   PERFECT HIGH-CONTRAST LIGHT THEME (Apple / Stripe Standards)
    ========================================================================== */
 body.light-theme {
   --bg-main: #f8fafc;
@@ -74,7 +74,9 @@ body.light-theme .conic-border-box {
 body.light-theme .bg-slate-950,
 body.light-theme .bg-slate-950\/60,
 body.light-theme .bg-slate-950\/70,
-body.light-theme .bg-slate-950\/80 {
+body.light-theme .bg-slate-950\/80,
+body.light-theme .bg-slate-950\/90,
+body.light-theme .bg-slate-950\/95 {
   background-color: #ffffff !important;
 }
 
@@ -482,6 +484,26 @@ body.light-theme .faq-item {
 @keyframes pulseRipple {
   0% { transform: scale(1); opacity: 1; }
   100% { transform: scale(1.45); opacity: 0; }
+}
+
+/* ==========================================================================
+   ADMIN AUDIT SUITE MODAL
+   ========================================================================== */
+#adminModal {
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.admin-card {
+  background: #0b1120;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1.25rem;
+}
+
+.admin-tab-btn.active {
+  background: #0284c7;
+  color: #ffffff;
 }
 
 /* Custom Scrollbars */
