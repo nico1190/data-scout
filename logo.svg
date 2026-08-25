@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <!-- Master Line Gradient: Royal Blue -> Electric Cyan -> Emerald Green -->
+    <linearGradient id="nmStrokeGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1d4ed8"/>
+      <stop offset="45%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+
+    <!-- Bar Gradients -->
+    <linearGradient id="bar1Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#0284c7" stop-opacity="0.1"/>
+    </linearGradient>
+    <linearGradient id="bar2Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0.1"/>
+    </linearGradient>
+    <linearGradient id="bar3Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.15"/>
+    </linearGradient>
+
+    <!-- Subtle Drop Shadow for Logo on White -->
+    <filter id="shadowLight" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <!-- 1. Pure Crisp White Squircle Container -->
+  <rect x="8" y="8" width="184" height="184" rx="48" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" filter="url(#shadowLight)"/>
+
+  <!-- 2. Clean Geometric Base Grid Lines -->
+  <g stroke="#f1f5f9" stroke-width="2">
+    <line x1="36" y1="148" x2="164" y2="148" stroke="#cbd5e1" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="36" y1="112" x2="164" y2="112" stroke-dasharray="3 4"/>
+    <line x1="36" y1="76" x2="164" y2="76" stroke-dasharray="3 4"/>
+  </g>
+
+  <!-- 3. Crisp Analytical Bar Columns -->
+  <!-- Bar 1 -->
+  <rect x="52" y="112" width="16" height="36" rx="4" fill="url(#bar1Grad)" stroke="#0284c7" stroke-width="1.5"/>
+  <!-- Bar 2 -->
+  <rect x="88" y="86" width="16" height="62" rx="4" fill="url(#bar2Grad)" stroke="#10b981" stroke-width="1.5"/>
+  <!-- Bar 3 -->
+  <rect x="124" y="62" width="16" height="86" rx="4" fill="url(#bar3Grad)" stroke="#3b82f6" stroke-width="1.5"/>
+
+  <!-- 4. Scout Lens Circle Framing the Apex Node -->
+  <circle cx="132" cy="56" r="16" fill="rgba(6, 182, 212, 0.08)" stroke="#0284c7" stroke-width="2" stroke-dasharray="8 3"/>
+
+  <!-- 5. The "NM" Continuous Ascending Chart Line -->
+  <!-- Starts at base -> Peak 1 (N leg 1) -> Valley -> Peak 2 (N leg 2 / M leg 1) -> Valley -> Breakout Apex (M leg 2 & Growth) -->
+  <path d="M 42 144 
+           L 70 76 
+           L 100 118 
+           L 132 56 
+           L 156 84 
+           L 165 40"
+        fill="none"
+        stroke="url(#nmStrokeGrad)"
+        stroke-width="7.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
+  <!-- 6. Ultra-Crisp Node Points -->
+  <circle cx="70" cy="76" r="5.5" fill="#ffffff" stroke="#1d4ed8" stroke-width="2.5"/>
+  <circle cx="100" cy="118" r="5" fill="#ffffff" stroke="#0284c7" stroke-width="2.5"/>
+  <circle cx="132" cy="56" r="6.5" fill="#0284c7" stroke="#ffffff" stroke-width="2"/>
+  <circle cx="165" cy="40" r="5.5" fill="#059669" stroke="#ffffff" stroke-width="2"/>
+
+  <!-- 7. Growth Arrow Head on Top Right -->
+  <polygon points="165,30 174,45 158,45" fill="#059669"/>
+</svg>
