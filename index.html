@@ -58,9 +58,11 @@
 </head>
 <body class="bg-grid-pattern min-h-screen text-slate-100 selection:bg-cyan-500 selection:text-slate-950 relative">
 
-  <!-- Ambient Light Auroras -->
-  <div class="aurora-glow-1"></div>
-  <div class="aurora-glow-2"></div>
+  <!-- Ambient Light Auroras (Enclosed & Clipped to prevent any horizontal overflow on mobile) -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+    <div class="aurora-glow-1"></div>
+    <div class="aurora-glow-2"></div>
+  </div>
 
   <!-- TOP VALUE ANNOUNCEMENT BAR WITH THEME TOGGLE IN TOP RIGHT CORNER -->
   <div class="relative z-50 bg-gradient-to-r from-cyan-950 via-slate-900 to-emerald-950 border-b border-cyan-500/20 text-slate-200 text-xs py-2 px-4 sm:px-6">
