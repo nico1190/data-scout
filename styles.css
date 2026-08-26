@@ -524,3 +524,99 @@ body.light-theme ::-webkit-scrollbar-track {
 body.light-theme ::-webkit-scrollbar-thumb {
   background: #cbd5e1;
 }
+
+/* ==========================================================================
+   DATA SCOUT STUDIO (UNIVERSAL PROFILER & MULTI-DOMAIN ANALYZER)
+   ========================================================================== */
+.studio-dropzone {
+  border: 2px dashed rgba(6, 182, 212, 0.35);
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(12px);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.studio-dropzone:hover,
+.studio-dropzone.dragover {
+  border-color: #06b6d4;
+  background: rgba(6, 182, 212, 0.08);
+  box-shadow: 0 0 35px rgba(6, 182, 212, 0.2);
+  transform: scale-[1.005];
+}
+body.light-theme .studio-dropzone {
+  background: #ffffff;
+  border-color: #cbd5e1;
+}
+body.light-theme .studio-dropzone:hover,
+body.light-theme .studio-dropzone.dragover {
+  border-color: #0284c7;
+  background: #f0f9ff;
+}
+
+.studio-tab-btn {
+  transition: all 0.2s ease;
+}
+.studio-tab-btn.active {
+  background: linear-gradient(135deg, #06b6d4, #3b82f6);
+  color: #030712;
+  font-weight: 800;
+  box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+}
+
+.domain-pill-btn {
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(15, 23, 42, 0.8);
+}
+.domain-pill-btn:hover {
+  border-color: rgba(6, 182, 212, 0.5);
+  transform: translateY(-1px);
+}
+.domain-pill-btn.active {
+  border-color: #06b6d4;
+  background: rgba(6, 182, 212, 0.15);
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.25);
+  color: #ffffff;
+}
+body.light-theme .domain-pill-btn {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  color: #334155;
+}
+body.light-theme .domain-pill-btn.active {
+  background: #e0f2fe;
+  border-color: #0284c7;
+  color: #0369a1;
+}
+
+.sample-preset-btn {
+  transition: all 0.2s ease;
+}
+.sample-preset-btn:hover {
+  border-color: rgba(6, 182, 212, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px -3px rgba(6, 182, 212, 0.2);
+}
+.sample-preset-btn.active {
+  border-color: #06b6d4 !important;
+  background: rgba(6, 182, 212, 0.15) !important;
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.3) !important;
+}
+body.light-theme .sample-preset-btn.active {
+  border-color: #0284c7 !important;
+  background: #e0f2fe !important;
+}
+
+/* Badges for Data Types */
+.type-badge-currency { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+.type-badge-date { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+.type-badge-number { background: rgba(6, 182, 212, 0.15); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.3); }
+.type-badge-category { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+.type-badge-id { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+.type-badge-text { background: rgba(148, 163, 184, 0.15); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.3); }
+
+body.light-theme .type-badge-currency { background: #dcfce7; color: #15803d; border-color: #86efac; }
+body.light-theme .type-badge-date { background: #dbeafe; color: #1d4ed8; border-color: #93c5fd; }
+body.light-theme .type-badge-number { background: #e0f2fe; color: #0369a1; border-color: #7dd3fc; }
+body.light-theme .type-badge-category { background: #f3e8ff; color: #7e22ce; border-color: #d8b4fe; }
+body.light-theme .type-badge-id { background: #fef3c7; color: #b45309; border-color: #fde68a; }
+body.light-theme .type-badge-text { background: #f1f5f9; color: #475569; border-color: #cbd5e1; }
+

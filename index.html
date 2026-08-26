@@ -94,9 +94,13 @@
       </a>
 
       <!-- Desktop Nav (Clean, without cluttered badges) -->
-      <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-300">
+      <nav class="hidden md:flex items-center gap-7 text-sm font-semibold text-slate-300">
         <a href="#comparativa" class="hover:text-cyan-400 transition-colors">Antes vs Después</a>
         <a href="#productos" class="hover:text-cyan-400 transition-colors">Nuestros 2 Productos</a>
+        <a href="#studio" class="hover:text-cyan-300 text-cyan-400 font-bold transition-colors flex items-center gap-1.5 px-3 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/25 shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+          <span>Studio (Analizador)</span>
+        </a>
         <a href="#demo" class="hover:text-cyan-400 transition-colors">Demo en Vivo</a>
         <a href="#proceso" class="hover:text-cyan-400 transition-colors">Entrega en 7 Días</a>
         <a href="#faq" class="hover:text-cyan-400 transition-colors">Preguntas</a>
@@ -118,6 +122,7 @@
     <div id="mobileMenu" class="hidden md:hidden bg-slate-950/95 border-b border-white/10 px-6 py-5 space-y-3">
       <a href="#comparativa" class="block py-1 text-slate-200 font-semibold hover:text-cyan-400">Antes vs Después</a>
       <a href="#productos" class="block py-1 text-slate-200 font-semibold hover:text-cyan-400">Nuestros 2 Productos</a>
+      <a href="#studio" class="block py-1 text-cyan-400 font-bold hover:text-cyan-300">⚡ Data Scout Studio (Analizador)</a>
       <a href="#demo" class="block py-1 text-slate-200 font-semibold hover:text-cyan-400">Demo & Descarga Excel</a>
       <a href="#proceso" class="block py-1 text-slate-200 font-semibold hover:text-cyan-400">Proceso de 7 Días</a>
       <a href="#faq" class="block py-1 text-slate-200 font-semibold hover:text-cyan-400">Preguntas Frecuentes</a>
@@ -445,6 +450,479 @@
               </div>
               <button onclick="selectProductQuote('CommandCenter 360 (Centro de Mando)')" class="btn-shimmer w-full py-4 rounded-xl bg-gradient-to-r from-cyan-400 via-teal-400 to-blue-500 text-slate-950 font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-cyan-500/25 hover:brightness-110 transition-all">
                 Cotizar CommandCenter 360 &rarr;
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: DATA SCOUT STUDIO (UNIVERSAL PROFILER & MULTI-DOMAIN ANALYZER) -->
+    <section id="studio" class="py-24 relative bg-slate-950/90 border-t border-white/[0.08]">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Header -->
+        <div class="text-center max-w-3xl mx-auto mb-12">
+          <span class="text-xs font-extrabold uppercase tracking-widest text-cyan-400 badge-glow-cyan px-3.5 py-1 rounded-full">
+            ✨ MOTOR AUTOPROFILER 360
+          </span>
+          <h2 class="font-display text-3xl sm:text-5xl font-black text-white mt-4">
+            Data Scout Studio: Analizador & Perfilador de Datos
+          </h2>
+          <p class="text-slate-400 text-sm sm:text-base mt-3">
+            Carga cualquier planilla o tabla de datos. Nuestro motor audita la calidad del dato, normaliza inconsistencias y clasifica automáticamente el análisis en tu dominio de negocio.
+          </p>
+        </div>
+
+        <!-- Ingestion Controls & Mode Switcher -->
+        <div class="spotlight-card rounded-3xl p-6 sm:p-8 border border-white/10 shadow-2xl mb-8">
+          
+          <!-- Mode Tabs -->
+          <div class="flex flex-wrap items-center justify-center gap-2 mb-6 pb-6 border-b border-white/10">
+            <button id="btnStudioModeUpload" class="studio-tab-btn active px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+              <span>Subir Archivo (.xlsx, .csv, .json)</span>
+            </button>
+            <button id="btnStudioModePaste" class="studio-tab-btn px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-white bg-slate-900 border border-white/10 flex items-center gap-2">
+              <i class="fa-solid fa-paste"></i>
+              <span>Pegar Datos (Clipboard)</span>
+            </button>
+            <button id="btnStudioModePresets" class="studio-tab-btn px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-white bg-slate-900 border border-white/10 flex items-center gap-2">
+              <i class="fa-solid fa-bolt text-yellow-400"></i>
+              <span>Datasets Demo Pre-Cargados</span>
+            </button>
+          </div>
+
+          <!-- Mode 1: File Dropzone -->
+          <div id="studioModeUploadContainer" class="space-y-4">
+            <input type="file" id="studioFileInput" accept=".xlsx,.xls,.csv,.tsv,.json,.txt" class="hidden">
+            <div id="studioDropzone" class="studio-dropzone rounded-2xl p-8 sm:p-12 text-center cursor-pointer relative">
+              <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 mx-auto flex items-center justify-center text-3xl mb-4 pointer-events-none">
+                <i class="fa-solid fa-file-excel"></i>
+              </div>
+              <h4 class="font-display font-bold text-lg text-white mb-1 pointer-events-none">Arrastra tu archivo aquí o haz clic para explorar</h4>
+              <p class="text-xs text-slate-400 max-w-md mx-auto mb-4 pointer-events-none">
+                Soporta archivos de Excel (.xlsx, .xls), CSV delimitado por comas/punto y coma, TSV o JSON.
+              </p>
+              <button type="button" id="btnSelectStudioFile" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs transition shadow-lg shadow-cyan-500/20">
+                <i class="fa-solid fa-folder-open"></i>
+                <span>Seleccionar Archivo de mi PC</span>
+              </button>
+              <div id="studioFileStatus" class="hidden mt-4 text-xs font-semibold text-cyan-300 bg-cyan-950/60 border border-cyan-500/30 px-3.5 py-2 rounded-lg inline-block"></div>
+            </div>
+          </div>
+
+          <!-- Mode 2: Paste Data -->
+          <div id="studioModePasteContainer" class="hidden space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-300 mb-2">Pega aquí el contenido de tus celdas copiadas de Excel, Sheets o CSV:</label>
+              <textarea id="studioPasteTextarea" rows="6" placeholder="Fecha	Cliente	Producto	Monto	Estado&#10;2025-01-10	Distribuidora Sur	Sensor Óptico	$ 1.450,00	Entregado&#10;2025-01-11	Ferretería Central	Válvula 1/2	890.50 USD	Pendiente" class="w-full bg-slate-900 text-slate-200 text-xs font-mono p-4 rounded-xl border border-white/15 focus:outline-none focus:border-cyan-400"></textarea>
+            </div>
+            <div class="flex justify-end">
+              <button id="btnProcessPastedData" class="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-black text-xs flex items-center gap-2 shadow-lg shadow-cyan-500/20 hover:brightness-110 transition">
+                <i class="fa-solid fa-play"></i>
+                <span>Analizar Tabla Pegada</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Mode 3: Demo Presets -->
+          <div id="studioModePresetsContainer" class="hidden space-y-4">
+            <p class="text-xs text-slate-400 mb-3">Haz clic en cualquier caso de negocio real para probar el análisis exhaustivo al instante:</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
+              
+              <button onclick="loadStudioPreset('ventas')" id="presetBtn_ventas" class="sample-preset-btn text-left p-4 rounded-2xl bg-slate-900/90 border border-white/10 hover:border-cyan-400">
+                <div class="w-9 h-9 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-base mb-2">
+                  <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <div class="font-bold text-xs text-white">Ventas & Márgenes</div>
+                <div class="text-[10px] text-slate-400 mt-1">Precios en texto, IVA y comisiones multicanal</div>
+              </button>
+
+              <button onclick="loadStudioPreset('logistica')" id="presetBtn_logistica" class="sample-preset-btn text-left p-4 rounded-2xl bg-slate-900/90 border border-white/10 hover:border-cyan-400">
+                <div class="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center text-base mb-2">
+                  <i class="fa-solid fa-truck-fast"></i>
+                </div>
+                <div class="font-bold text-xs text-white">Logística & Envíos</div>
+                <div class="text-[10px] text-slate-400 mt-1">Tiempos de entrega, demoras y transportistas</div>
+              </button>
+
+              <button onclick="loadStudioPreset('operaciones')" id="presetBtn_operaciones" class="sample-preset-btn text-left p-4 rounded-2xl bg-slate-900/90 border border-white/10 hover:border-cyan-400">
+                <div class="w-9 h-9 rounded-xl bg-yellow-500/10 text-yellow-400 flex items-center justify-center text-base mb-2">
+                  <i class="fa-solid fa-gears"></i>
+                </div>
+                <div class="font-bold text-xs text-white">Operaciones & Taller</div>
+                <div class="text-[10px] text-slate-400 mt-1">Órdenes de trabajo, horas reales vs plan y scrap</div>
+              </button>
+
+              <button onclick="loadStudioPreset('stock')" id="presetBtn_stock" class="sample-preset-btn text-left p-4 rounded-2xl bg-slate-900/90 border border-white/10 hover:border-cyan-400">
+                <div class="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-base mb-2">
+                  <i class="fa-solid fa-boxes-stacked"></i>
+                </div>
+                <div class="font-bold text-xs text-white">Stock & Inventario</div>
+                <div class="text-[10px] text-slate-400 mt-1">Valorizado, quiebres y productos inmovilizados</div>
+              </button>
+
+              <button onclick="loadStudioPreset('bancos')" id="presetBtn_bancos" class="sample-preset-btn text-left p-4 rounded-2xl bg-slate-900/90 border border-white/10 hover:border-cyan-400">
+                <div class="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-base mb-2">
+                  <i class="fa-solid fa-building-columns"></i>
+                </div>
+                <div class="font-bold text-xs text-white">Conciliación Bancos</div>
+                <div class="text-[10px] text-slate-400 mt-1">Extractos bancarios vs ERP y match de saldos</div>
+              </button>
+
+              <button onclick="loadStudioPreset('cobranzas')" id="presetBtn_cobranzas" class="sample-preset-btn text-left p-4 rounded-2xl bg-slate-900/90 border border-white/10 hover:border-cyan-400">
+                <div class="w-9 h-9 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center text-base mb-2">
+                  <i class="fa-solid fa-file-invoice-dollar"></i>
+                </div>
+                <div class="font-bold text-xs text-white">Cuentas por Cobrar</div>
+                <div class="text-[10px] text-slate-400 mt-1">Antigüedad de deuda, vencimientos y morosidad</div>
+              </button>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Studio Results Workspace (Live Profiler Dashboard) -->
+        <div id="studioResultsContainer" class="space-y-8">
+          
+          <!-- Quality & Structure KPIs Bar -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            <div class="spotlight-card p-4 rounded-2xl">
+              <span class="text-[11px] text-slate-400 font-semibold block">Filas Totales</span>
+              <div id="profMetricRows" class="font-display text-2xl font-black text-white mt-1">0</div>
+              <div class="text-[10px] text-slate-400 mt-0.5">Registros cargados</div>
+            </div>
+
+            <div class="spotlight-card p-4 rounded-2xl">
+              <span class="text-[11px] text-slate-400 font-semibold block">Columnas</span>
+              <div id="profMetricCols" class="font-display text-2xl font-black text-cyan-400 mt-1">0</div>
+              <div class="text-[10px] text-slate-400 mt-0.5">Campos detectados</div>
+            </div>
+
+            <div class="spotlight-card p-4 rounded-2xl">
+              <span class="text-[11px] text-slate-400 font-semibold block">Celdas Analizadas</span>
+              <div id="profMetricCells" class="font-display text-2xl font-black text-white mt-1">0</div>
+              <div class="text-[10px] text-slate-400 mt-0.5">Puntos de datos</div>
+            </div>
+
+            <div class="spotlight-card p-4 rounded-2xl">
+              <span class="text-[11px] text-slate-400 font-semibold block">Tasa de Nulos / Vacíos</span>
+              <div id="profMetricNulls" class="font-display text-2xl font-black text-amber-400 mt-1">0%</div>
+              <div class="text-[10px] text-slate-400 mt-0.5">Completitud del dato</div>
+            </div>
+
+            <div class="spotlight-card p-4 rounded-2xl">
+              <span class="text-[11px] text-slate-400 font-semibold block">Duplicados</span>
+              <div id="profMetricDupes" class="font-display text-2xl font-black text-blue-400 mt-1">0</div>
+              <div class="text-[10px] text-slate-400 mt-0.5">Filas repetidas</div>
+            </div>
+
+            <div class="spotlight-card p-4 rounded-2xl border border-emerald-500/30 bg-emerald-950/15">
+              <span class="text-[11px] text-emerald-400 font-bold block flex items-center justify-between">
+                <span>Salud del Dato</span>
+                <span id="profScoreBadge" class="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-black">Óptimo</span>
+              </span>
+              <div id="profMetricScore" class="font-display text-2xl font-black text-emerald-400 mt-1">100%</div>
+              <div class="w-full bg-slate-800 h-1.5 rounded-full mt-1.5 overflow-hidden">
+                <div id="profScoreBar" class="bg-emerald-400 h-full rounded-full transition-all duration-500" style="width: 100%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Business Domain Lens Switcher Bar -->
+          <div class="spotlight-card rounded-2xl p-5 border border-cyan-500/30 bg-slate-900/90 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping"></span>
+                <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Dominio Detectado Automáticamente:</span>
+                <span id="detectedDomainBadge" class="px-2.5 py-0.5 rounded-md bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-xs font-black">
+                  💼 Comercial & Ventas
+                </span>
+              </div>
+              <p class="text-xs text-slate-400 mt-1">
+                Puedes alternar libremente el lente de análisis para explorar la información desde otra perspectiva:
+              </p>
+            </div>
+
+            <!-- Domain Pills Selector -->
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <button onclick="switchStudioDomain('ventas')" id="btnDomVentas" class="domain-pill-btn active px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5">
+                <i class="fa-solid fa-chart-line text-cyan-400"></i>
+                <span>Comercial</span>
+              </button>
+              <button onclick="switchStudioDomain('logistica')" id="btnDomLogistica" class="domain-pill-btn px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                <i class="fa-solid fa-truck-fast text-blue-400"></i>
+                <span>Logística</span>
+              </button>
+              <button onclick="switchStudioDomain('operaciones')" id="btnDomOperaciones" class="domain-pill-btn px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                <i class="fa-solid fa-gears text-yellow-400"></i>
+                <span>Operaciones</span>
+              </button>
+              <button onclick="switchStudioDomain('stock')" id="btnDomStock" class="domain-pill-btn px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                <i class="fa-solid fa-boxes-stacked text-amber-400"></i>
+                <span>Stock</span>
+              </button>
+              <button onclick="switchStudioDomain('bancos')" id="btnDomBancos" class="domain-pill-btn px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                <i class="fa-solid fa-building-columns text-emerald-400"></i>
+                <span>Bancario</span>
+              </button>
+              <button onclick="switchStudioDomain('cobranzas')" id="btnDomCobranzas" class="domain-pill-btn px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                <i class="fa-solid fa-file-invoice-dollar text-purple-400"></i>
+                <span>Finanzas</span>
+              </button>
+              <button onclick="switchStudioDomain('universal')" id="btnDomUniversal" class="domain-pill-btn px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                <i class="fa-solid fa-atom text-cyan-400"></i>
+                <span>Universal / BI</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Studio Navigation Tabs (Domain Dashboard, Dictionary, Clean Data, Executive Report) -->
+          <div class="flex items-center gap-2 border-b border-white/10 pb-3 overflow-x-auto">
+            <button id="tabBtnStudioDomain" onclick="switchStudioView('domain')" class="studio-tab-btn active px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2">
+              <i class="fa-solid fa-chart-pie"></i>
+              <span>1. Tablero & KPIs del Dominio</span>
+            </button>
+            <button id="tabBtnStudioDictionary" onclick="switchStudioView('dictionary')" class="studio-tab-btn px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-white bg-slate-900 border border-white/10 flex items-center gap-2">
+              <i class="fa-solid fa-table-columns"></i>
+              <span>2. Diccionario & Calidad de Columnas</span>
+            </button>
+            <button id="tabBtnStudioCleanData" onclick="switchStudioView('cleandata')" class="studio-tab-btn px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-white bg-slate-900 border border-white/10 flex items-center gap-2">
+              <i class="fa-solid fa-database"></i>
+              <span>3. Visor de Datos Limpios</span>
+            </button>
+            <button id="tabBtnStudioExecutive" onclick="switchStudioView('executive')" class="studio-tab-btn px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-white bg-slate-900 border border-white/10 flex items-center gap-2">
+              <i class="fa-solid fa-file-lines"></i>
+              <span>4. Diagnóstico Ejecutivo & Acciones</span>
+            </button>
+          </div>
+
+          <!-- TAB VIEW 1: DOMAIN DASHBOARD -->
+          <div id="studioViewDomain" class="space-y-6">
+            
+            <!-- 4 Domain Specialized KPIs -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div class="spotlight-card p-5 rounded-2xl">
+                <span id="domKpiLabel1" class="text-xs text-slate-400 font-semibold block">Facturación Total</span>
+                <div id="domKpiVal1" class="font-display text-2xl sm:text-3xl font-extrabold text-white mt-1">$0.00</div>
+                <div id="domKpiSub1" class="text-[11px] text-emerald-400 font-bold mt-1">Calculado sobre transacciones</div>
+              </div>
+
+              <div class="spotlight-card p-5 rounded-2xl">
+                <span id="domKpiLabel2" class="text-xs text-slate-400 font-semibold block">Margen Neto Global</span>
+                <div id="domKpiVal2" class="font-display text-2xl sm:text-3xl font-extrabold text-cyan-400 mt-1">0%</div>
+                <div id="domKpiSub2" class="text-[11px] text-slate-400 font-medium mt-1">Rentabilidad estimada</div>
+              </div>
+
+              <div class="spotlight-card p-5 rounded-2xl">
+                <span id="domKpiLabel3" class="text-xs text-slate-400 font-semibold block">Ticket Promedio</span>
+                <div id="domKpiVal3" class="font-display text-2xl sm:text-3xl font-extrabold text-blue-400 mt-1">$0.00</div>
+                <div id="domKpiSub3" class="text-[11px] text-slate-400 font-medium mt-1">Por operación</div>
+              </div>
+
+              <div class="spotlight-card p-5 rounded-2xl">
+                <span id="domKpiLabel4" class="text-xs text-slate-400 font-semibold block">Registros Críticos</span>
+                <div id="domKpiVal4" class="font-display text-2xl sm:text-3xl font-extrabold text-amber-400 mt-1">0</div>
+                <div id="domKpiSub4" class="text-[11px] text-amber-400 font-bold mt-1">Requieren atención</div>
+              </div>
+            </div>
+
+            <!-- Domain Specialized Charts -->
+            <div class="grid lg:grid-cols-12 gap-6">
+              
+              <!-- Main Chart (8 cols) -->
+              <div class="lg:col-span-8 spotlight-card p-6 rounded-3xl border border-white/10">
+                <div class="flex items-center justify-between mb-4">
+                  <div>
+                    <h4 id="studioChartMainTitle" class="font-display font-bold text-white text-base">Evolución & Distribución Temporal</h4>
+                    <p id="studioChartMainSub" class="text-xs text-slate-400">Tendencia de volumen e importes analizados</p>
+                  </div>
+                  <span class="text-[11px] font-mono text-cyan-400 bg-cyan-500/10 px-2.5 py-1 rounded-md border border-cyan-500/20">
+                    Interactiva
+                  </span>
+                </div>
+                <div class="h-72 w-full relative">
+                  <canvas id="chartStudioMain"></canvas>
+                </div>
+              </div>
+
+              <!-- Secondary Chart (4 cols) -->
+              <div class="lg:col-span-4 spotlight-card p-6 rounded-3xl border border-white/10">
+                <div class="flex items-center justify-between mb-4">
+                  <div>
+                    <h4 id="studioChartSecTitle" class="font-display font-bold text-white text-base">Composición por Categoría</h4>
+                    <p id="studioChartSecSub" class="text-xs text-slate-400">Participación por segmento</p>
+                  </div>
+                  <span class="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20">
+                    Proporción
+                  </span>
+                </div>
+                <div class="h-72 w-full relative flex items-center justify-center">
+                  <canvas id="chartStudioSecondary"></canvas>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Strategic Business Alerts & Insights List -->
+            <div class="spotlight-card p-6 rounded-3xl border border-white/10">
+              <div class="flex items-center gap-2 mb-4">
+                <i class="fa-solid fa-triangle-exclamation text-amber-400 text-base"></i>
+                <h4 class="font-display font-bold text-white text-base">Hallazgos Operativos Detectados en la Información</h4>
+              </div>
+              <div id="studioDomainAlertsList" class="space-y-2.5 text-xs text-slate-300">
+                <!-- Injected via JavaScript -->
+              </div>
+            </div>
+
+          </div>
+
+          <!-- TAB VIEW 2: COLUMN DICTIONARY & AUDIT -->
+          <div id="studioViewDictionary" class="hidden space-y-4">
+            <div class="spotlight-card rounded-3xl p-6 border border-white/10 overflow-hidden">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 mb-4 border-b border-white/10">
+                <div>
+                  <h4 class="font-display font-bold text-white text-base">Diccionario de Datos & Auditoría Columna por Columna</h4>
+                  <p class="text-xs text-slate-400">Tipología semántica inferida, cardinalidad, completitud y acciones correctivas aplicadas.</p>
+                </div>
+                <span class="text-xs text-emerald-400 font-bold flex items-center gap-1.5">
+                  <i class="fa-solid fa-circle-check"></i>
+                  <span>Normalización AutoTask Activa</span>
+                </span>
+              </div>
+
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                  <thead class="bg-slate-950/80 text-slate-400 uppercase text-[10px] font-bold tracking-wider">
+                    <tr>
+                      <th class="p-3">Columna</th>
+                      <th class="p-3">Tipo Inferido</th>
+                      <th class="p-3">Valores Únicos</th>
+                      <th class="p-3">% Nulos / Vacíos</th>
+                      <th class="p-3">Resumen Estadístico (Min / Max / Promedio)</th>
+                      <th class="p-3">Tratamiento AutoTask</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tableBodyColumnProfile" class="divide-y divide-white/5 text-slate-300">
+                    <!-- Injected dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB VIEW 3: CLEAN DATA VIEWER -->
+          <div id="studioViewCleanData" class="hidden space-y-4">
+            <div class="spotlight-card rounded-3xl p-6 border border-white/10">
+              
+              <!-- Toolbar -->
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 mb-4 border-b border-white/10">
+                <div class="flex items-center gap-3">
+                  <div class="relative w-full sm:w-72">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                    <input type="text" id="inputStudioSearchTable" placeholder="Buscar en cualquier columna..." class="w-full bg-slate-900 text-slate-200 text-xs pl-9 pr-4 py-2.5 rounded-xl border border-white/10 focus:outline-none focus:border-cyan-400">
+                  </div>
+                  <span id="studioTableRowsCount" class="text-xs text-slate-400 shrink-0 font-medium">0 registros</span>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <span class="text-xs text-slate-400">Mostrar:</span>
+                  <select id="selectStudioPageSize" class="bg-slate-900 text-slate-200 text-xs px-3 py-2 rounded-xl border border-white/10 focus:outline-none cursor-pointer">
+                    <option value="10">10 filas</option>
+                    <option value="25" selected>25 filas</option>
+                    <option value="50">50 filas</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Table Container -->
+              <div class="overflow-x-auto max-h-[500px]">
+                <table class="w-full text-left text-xs font-mono">
+                  <thead id="studioCleanTableHead" class="bg-slate-950 text-slate-400 uppercase text-[10px] font-bold tracking-wider sticky top-0">
+                    <!-- Injected via app.js -->
+                  </thead>
+                  <tbody id="studioCleanTableBody" class="divide-y divide-white/5 text-slate-300">
+                    <!-- Injected via app.js -->
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Pagination Controls -->
+              <div class="flex items-center justify-between pt-4 mt-4 border-t border-white/10">
+                <span id="studioPaginationInfo" class="text-xs text-slate-400 font-sans">Página 1 de 1</span>
+                <div class="flex items-center gap-2">
+                  <button id="btnStudioPagePrev" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-bold border border-white/10 disabled:opacity-40 disabled:cursor-not-allowed">
+                    &larr; Anterior
+                  </button>
+                  <button id="btnStudioPageNext" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-bold border border-white/10 disabled:opacity-40 disabled:cursor-not-allowed">
+                    Siguiente &rarr;
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- TAB VIEW 4: EXECUTIVE DIAGNOSTIC -->
+          <div id="studioViewExecutive" class="hidden space-y-6">
+            <div class="spotlight-card rounded-3xl p-6 sm:p-8 border border-white/10 space-y-6">
+              
+              <div class="flex items-center gap-3 pb-4 border-b border-white/10">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 flex items-center justify-center text-lg font-bold">
+                  <i class="fa-solid fa-brain"></i>
+                </div>
+                <div>
+                  <h3 class="font-display font-bold text-white text-lg sm:text-xl">Diagnóstico Ejecutivo de la Información</h3>
+                  <p class="text-xs text-slate-400">Síntesis para gerencia & directores sobre el estado de la información analizada</p>
+                </div>
+              </div>
+
+              <!-- Narrative Summary -->
+              <div id="studioExecutiveNarrative" class="space-y-4 text-xs sm:text-sm text-slate-200 leading-relaxed">
+                <!-- Injected via JavaScript -->
+              </div>
+
+              <!-- Next Steps / Recommended Blueprint by Data Scout -->
+              <div class="p-5 rounded-2xl bg-cyan-950/20 border border-cyan-500/30 space-y-3">
+                <span class="text-xs font-extrabold uppercase tracking-wider text-cyan-400 flex items-center gap-2">
+                  <i class="fa-solid fa-lightbulb"></i>
+                  <span>Recomendación de Automatización & Sistema Data Scout</span>
+                </span>
+                <p id="studioExecutiveRecommendation" class="text-xs sm:text-sm text-slate-300">
+                  <!-- Injected via JavaScript -->
+                </p>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- STUDIO ACTION & CONVERSION FOOTER BAR -->
+          <div class="spotlight-card rounded-3xl p-6 sm:p-8 border border-white/15 bg-gradient-to-r from-slate-950 via-slate-900 to-cyan-950/40 flex flex-col lg:flex-row items-center justify-between gap-6 shadow-2xl">
+            <div>
+              <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-black uppercase tracking-wider">
+                Resultados Listos
+              </span>
+              <h3 class="font-display text-xl sm:text-2xl font-bold text-white mt-2">
+                ¿Quieres automatizar este flujo o crear tu tablero gerencial?
+              </h3>
+              <p class="text-xs text-slate-400 mt-1 max-w-xl">
+                Descarga el archivo Excel auditado o envíanos este diagnóstico directamente para diseñar tu solución llave en mano en menos de 7 días.
+              </p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
+              <button id="btnDownloadStudioExcel" class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition">
+                <i class="fa-solid fa-download"></i>
+                <span>Descargar Excel (.xlsx) Consolidado</span>
+              </button>
+              
+              <button id="btnSendDiagnosticWhatsapp" class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-black text-xs flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/25 hover:brightness-110 transition">
+                <i class="fa-brands fa-whatsapp text-sm"></i>
+                <span>Cotizar Sistema con este Diagnóstico</span>
               </button>
             </div>
           </div>
@@ -943,6 +1421,7 @@
       <div class="flex items-center gap-6 font-medium">
         <a href="#comparativa" class="hover:text-white transition">Antes vs Después</a>
         <a href="#productos" class="hover:text-white transition">Productos</a>
+        <a href="#studio" class="text-cyan-400 font-bold hover:text-cyan-300 transition">Studio Analizador</a>
         <a href="#demo" class="hover:text-white transition">Demos</a>
         <a href="#proceso" class="hover:text-white transition">Proceso</a>
         <a href="#faq" class="hover:text-white transition">FAQ</a>
