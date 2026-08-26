@@ -448,42 +448,61 @@ body.light-theme .faq-item {
   color: #06b6d4;
 }
 
-/* Floating WhatsApp Button with Ripple */
+/* Floating WhatsApp Button with Enhanced Mobile Pill */
 .whatsapp-float-btn {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
-  z-index: 99;
-  width: 62px;
-  height: 62px;
-  border-radius: 50%;
+  bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  right: calc(16px + env(safe-area-inset-right, 0px));
+  z-index: 9999;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px 10px 14px;
+  border-radius: 9999px;
   background: linear-gradient(135deg, #25d366, #128c7e);
   color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 30px;
-  box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 10px 30px rgba(37, 211, 102, 0.45), 0 4px 12px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  text-decoration: none;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: bounceInEntrance 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+@keyframes bounceInEntrance {
+  0% { transform: scale(0) translateY(30px); opacity: 0; }
+  70% { transform: scale(1.08) translateY(-4px); opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
 }
 
 .whatsapp-float-btn:hover {
-  transform: scale(1.12) rotate(6deg);
-  box-shadow: 0 15px 35px rgba(37, 211, 102, 0.6);
+  transform: translateY(-4px) scale(1.04);
+  box-shadow: 0 16px 36px rgba(37, 211, 102, 0.6);
 }
 
-.whatsapp-float-btn::before {
+.whatsapp-badge-ping {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #22c55e;
+  border: 2.5px solid #ffffff;
+  box-shadow: 0 0 10px #22c55e;
+}
+
+.whatsapp-badge-ping::after {
   content: '';
   position: absolute;
   inset: -4px;
   border-radius: 50%;
-  border: 2px solid rgba(37, 211, 102, 0.6);
-  animation: pulseRipple 2.2s infinite ease-out;
+  border: 2px solid #22c55e;
+  animation: pingDot 1.8s infinite cubic-bezier(0, 0, 0.2, 1);
 }
 
-@keyframes pulseRipple {
-  0% { transform: scale(1); opacity: 1; }
-  100% { transform: scale(1.45); opacity: 0; }
+@keyframes pingDot {
+  0% { transform: scale(1); opacity: 0.9; }
+  100% { transform: scale(2.4); opacity: 0; }
 }
 
 /* ==========================================================================
@@ -619,4 +638,75 @@ body.light-theme .type-badge-number { background: #e0f2fe; color: #0369a1; borde
 body.light-theme .type-badge-category { background: #f3e8ff; color: #7e22ce; border-color: #d8b4fe; }
 body.light-theme .type-badge-id { background: #fef3c7; color: #b45309; border-color: #fde68a; }
 body.light-theme .type-badge-text { background: #f1f5f9; color: #475569; border-color: #cbd5e1; }
+
+/* ==========================================================================
+   MOBILE & LANDSCAPE RESPONSIVE OPTIMIZATIONS
+   ========================================================================== */
+
+/* Text Balance */
+h1, h2, h3, .font-display {
+  text-wrap: balance;
+}
+
+/* Mobile Portrait Polish (< 640px) */
+@media (max-width: 640px) {
+  .conic-border-box,
+  .spotlight-card {
+    padding: 1.25rem !important;
+    border-radius: 1.25rem !important;
+  }
+  
+  .mac-terminal {
+    border-radius: 1rem !important;
+  }
+  
+  .font-display.text-4xl,
+  .font-display.text-5xl,
+  .font-display.text-6xl {
+    font-size: 2.15rem !important;
+    line-height: 1.15 !important;
+  }
+}
+
+/* Mobile Landscape (< 560px height when rotated) */
+@media (max-height: 560px) and (orientation: landscape) {
+  header {
+    height: 54px !important;
+  }
+  header .h-20 {
+    height: 54px !important;
+  }
+  
+  section {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+  }
+
+  .font-display.text-3xl,
+  .font-display.text-4xl,
+  .font-display.text-5xl,
+  .font-display.text-6xl {
+    font-size: 1.75rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .whatsapp-float-btn {
+    bottom: 10px;
+    right: 12px;
+    padding: 8px 14px 8px 10px;
+  }
+  
+  .whatsapp-float-btn i {
+    font-size: 20px !important;
+  }
+
+  .whatsapp-pill-text span.text-xs {
+    font-size: 11px !important;
+  }
+
+  .mac-terminal,
+  .studio-dropzone {
+    padding: 1rem !important;
+  }
+}
 
