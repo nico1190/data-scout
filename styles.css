@@ -748,12 +748,77 @@ main, section, header, footer {
   }
 
   .mac-terminal,
+  .robot-process-card,
   .studio-dropzone {
     padding: 0.85rem !important;
   }
 
   .spotlight-card {
     padding: 0.85rem !important;
+  }
+}
+
+/* ==========================================================================
+   AI COPILOT & AUTOMATION ROBOT STYLES
+   ========================================================================== */
+
+.ai-insight-box {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(8, 20, 38, 0.9) 60%, rgba(6, 182, 212, 0.12) 100%);
+  border: 1px solid rgba(6, 182, 212, 0.35);
+  box-shadow: 0 10px 30px -10px rgba(6, 182, 212, 0.2);
+}
+
+body.light-theme .ai-insight-box {
+  background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 60%, #e0f2fe 100%);
+  border-color: #38bdf8;
+  box-shadow: 0 10px 30px -10px rgba(2, 132, 199, 0.15);
+}
+
+.ai-badge-pulse {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.ai-badge-pulse::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #22d3ee;
+  margin-right: 5px;
+  box-shadow: 0 0 8px #22d3ee;
+  animation: pulseAiDot 1.8s infinite ease-in-out;
+}
+
+@keyframes pulseAiDot {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.6);
+    opacity: 0.4;
+  }
+}
+
+.robot-process-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.robot-step-pill {
+  animation: slideFadeIn 0.35s ease-out forwards;
+}
+
+@keyframes slideFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

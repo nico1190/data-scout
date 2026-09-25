@@ -563,7 +563,13 @@ const branchData = {
     labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
     sales: [28000, 32500, 39000, 41200, 44800, 48250],
     costs: [19500, 22100, 26000, 27500, 30200, 32400],
-    categories: [45, 25, 18, 12]
+    categories: [45, 25, 18, 12],
+    aiInsights: {
+      branchBadge: '🏢 Vista: Todas las Sucursales',
+      diagnosis: 'Facturación global sólida en $48.250 USD con un margen de 32.8%. El negocio tiene un ritmo positivo (+14.2% vs mes anterior), pero con fuerte disparidad de rentabilidad entre locales.',
+      alerts: 'En Sucursal Norte el margen cayó al 29.4% por exceso de descuentos no autorizados. A su vez, 3 productos de alta rotación están a 4 días de quebrar stock.',
+      action: '1) Limitar descuentos en Norte al 10% (recuperas ~$1.800 USD/mes). 2) Replicar la venta cruzada de Central. 3) Reponer stock de los 3 productos críticos.'
+    }
   },
   central: {
     revenue: '$24,100 USD',
@@ -573,7 +579,13 @@ const branchData = {
     labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
     sales: [14000, 16200, 19500, 20800, 22400, 24100],
     costs: [9200, 10500, 12600, 13400, 14500, 15600],
-    categories: [50, 20, 20, 10]
+    categories: [50, 20, 20, 10],
+    aiInsights: {
+      branchBadge: '📍 Vista: Sucursal Central',
+      diagnosis: 'Rendimiento sobresaliente: $24.100 USD (50% de la facturación global) con el margen neto más alto del negocio (35.2%) y un ticket promedio líder de $165 USD.',
+      alerts: '1 solo producto en alerta de stock (Válvula Reguladora). Sin embargo, el 50% de las ventas depende de una sola línea ("Industrial"), lo que genera concentración de riesgo.',
+      action: '1) Replicar el protocolo de ventas de Central en el resto de sucursales. 2) Ampliar la oferta de servicios complementarios para elevar el ticket a $180 USD.'
+    }
   },
   norte: {
     revenue: '$14,650 USD',
@@ -583,7 +595,13 @@ const branchData = {
     labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
     sales: [8500, 9800, 11800, 12500, 13600, 14650],
     costs: [6000, 6900, 8300, 8900, 9700, 10350],
-    categories: [35, 30, 20, 15]
+    categories: [35, 30, 20, 15],
+    aiInsights: {
+      branchBadge: '📍 Vista: Sucursal Norte',
+      diagnosis: 'Facturación de $14.650 USD en crecimiento (+7.7%), pero con la rentabilidad más baja de la empresa (29.4% vs 35.2% de Central), dejando $1.850 USD menos de margen neto.',
+      alerts: 'Fuga de rentabilidad confirmada: el equipo comercial aplicó descuentos promedios del 18% para cerrar ventas. Además, 2 productos tienen quiebre inminente en 48 hs.',
+      action: '1) Implementar tope estricto de descuento del 10% en el sistema comercial. 2) Reordenar compra inmediata para los 2 SKUs agotados para no perder ventas del fin de semana.'
+    }
   },
   online: {
     revenue: '$9,500 USD',
@@ -593,7 +611,13 @@ const branchData = {
     labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
     sales: [5500, 6500, 7700, 7900, 8800, 9500],
     costs: [3400, 4000, 4800, 4900, 5400, 5890],
-    categories: [60, 20, 10, 10]
+    categories: [60, 20, 10, 10],
+    aiInsights: {
+      branchBadge: '🌐 Vista: Canal E-commerce',
+      diagnosis: 'El canal más eficiente: margen neto récord del 38.0% y $9.500 USD facturados con cero costo de mostrador. Sin embargo, su ticket promedio es bajo ($89 USD).',
+      alerts: '0 quiebres de stock (excelente cobertura logística), pero se detecta una tasa de abandono de carrito estimada en 42% por falta de opciones de financiación ágil.',
+      action: '1) Crear packs o combos de productos para elevar el ticket promedio a +$120 USD. 2) Implementar recordatorios automatizados por WhatsApp para recuperar +$1.500 USD/mes.'
+    }
   }
 };
 
@@ -717,6 +741,19 @@ function initCommandCenterCharts() {
       document.getElementById('kpiTicket').innerText = data.ticket;
       document.getElementById('kpiStock').innerText = data.stock;
 
+      // Actualizar Asistente IA en tiempo real
+      const aiBadge = document.getElementById('aiBranchBadge');
+      const aiDiag = document.getElementById('aiInsightDiagnosis');
+      const aiAlerts = document.getElementById('aiInsightAlerts');
+      const aiAction = document.getElementById('aiInsightAction');
+
+      if (aiBadge && data.aiInsights) {
+        aiBadge.innerText = data.aiInsights.branchBadge;
+        aiDiag.innerHTML = data.aiInsights.diagnosis;
+        aiAlerts.innerHTML = data.aiInsights.alerts;
+        aiAction.innerHTML = data.aiInsights.action;
+      }
+
       salesChart.data.datasets[0].data = data.sales;
       salesChart.data.datasets[1].data = data.costs;
       salesChart.update();
@@ -765,52 +802,81 @@ function initAutoTaskSimulator() {
 
   if (!btnRun || !terminalBody) return;
 
-  const simulatedLogs = [
-    { delay: 300, text: '<span class="text-cyan-400 font-bold">[10:14:02.102] INICIANDO DATA SCOUT AUTOTASK:</span> Lectura y consolidación de 3 planillas Excel (.xlsx)...' },
-    { delay: 750, text: '<span class="text-slate-400">[10:14:02.415] [ARCHIVOS CARGADOS]</span> Ventas_Central.xlsx (840 f.), Ventas_Norte.xlsx (620 f.), Ecommerce_Jun.xlsx (1,020 f.)...' },
-    { delay: 1250, text: '<span class="text-emerald-400 font-bold">[10:14:02.780] [AUDITORÍA DE DATOS]</span> 2,480 registros procesados. 0% de corrupción.' },
-    { delay: 1750, text: '<span class="text-amber-400 font-bold">[10:14:03.010] [CORRECCIÓN AUTOMÁTICA]</span> 3 precios con formato de texto (comas/símbolos) normalizados a valores numéricos.' },
-    { delay: 2250, text: '<span class="text-cyan-400 font-bold">[10:14:03.350] [CRUCE DE STOCK & IVA]</span> IVA discriminado al 21% y 2 productos críticos señalizados.' },
-    { delay: 2750, text: '<span class="text-emerald-400 font-bold">[10:14:03.710] [REPORTE FINAL]</span> Generando Reporte_Consolidado_Auditado_DataScout.xlsx...' },
-    { delay: 3100, text: '<span class="text-teal-300 font-extrabold">[10:14:03.890] ✅ EJECUCIÓN EXITOSA en 1.788s (0 errores humanos, listo para descargar)</span>' }
+  const simulatedSteps = [
+    {
+      delay: 300,
+      icon: 'fa-folder-tree text-cyan-400',
+      badge: 'Leído',
+      badgeClass: 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30',
+      title: 'Paso 1: Conexión y lectura de 3 planillas sucursales',
+      detail: 'Leídos 2.480 registros de Ventas_Central.xlsx, Ventas_Norte.xlsx y Ecommerce_Jun.xlsx sin tocar fórmulas.'
+    },
+    {
+      delay: 800,
+      icon: 'fa-wand-magic-sparkles text-amber-400',
+      badge: 'Corregido',
+      badgeClass: 'bg-amber-500/15 text-amber-400 border border-amber-500/30',
+      title: 'Paso 2: Corrección automática de errores humanos',
+      detail: '3 precios escritos como texto con signos "$" y espacios fueron convertidos a número real. 0% de corrupción.'
+    },
+    {
+      delay: 1350,
+      icon: 'fa-calculator text-blue-400',
+      badge: 'Calculado',
+      badgeClass: 'bg-blue-500/15 text-blue-400 border border-blue-500/30',
+      title: 'Paso 3: Cálculo de rentabilidad real, IVA e inventario',
+      detail: 'Margen neto real calculado por sucursal, IVA 21% desglosado y 2 alertas de stock crítico marcadas.'
+    },
+    {
+      delay: 1850,
+      icon: 'fa-circle-check text-emerald-400',
+      badge: '100% Éxito',
+      badgeClass: 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40',
+      title: '¡Reporte Consolidado generado en 1.8 segundos!',
+      detail: 'Se ahorraron 4.5 horas de trabajo manual repetitivo. Cero errores humanos. Listo para abrir en tu Excel.'
+    }
   ];
 
   btnRun.addEventListener('click', () => {
     btnRun.disabled = true;
     btnRun.classList.add('opacity-50', 'cursor-not-allowed');
-    terminalStatus.innerText = 'Ejecutando...';
+    terminalStatus.innerText = 'Procesando planillas...';
     terminalStatus.className = 'text-[10px] px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold animate-pulse';
     
     logAuditEvent('EJECUCION_DEMO_AUTOTASK', { trigger: 'Boton 1-Click' });
 
-    terminalBody.innerHTML = `
-      <p class="text-slate-400">$ python -m datascout.autotask --validate-strict</p>
-      <div class="h-1 bg-slate-800 w-full my-2 rounded overflow-hidden">
-        <div id="simProgressBar" class="h-full bg-cyan-400 transition-all duration-300" style="width: 0%"></div>
-      </div>
-    `;
+    terminalBody.innerHTML = '';
+    const prog = document.getElementById('simProgressBar');
+    if (prog) prog.style.width = '0%';
 
-    simulatedLogs.forEach((item, index) => {
+    simulatedSteps.forEach((step, index) => {
       setTimeout(() => {
-        const p = document.createElement('p');
-        p.className = 'log-entry text-xs font-mono py-0.5';
-        p.innerHTML = item.text;
-        terminalBody.appendChild(p);
-        terminalBody.scrollTop = terminalBody.scrollHeight;
+        const stepDiv = document.createElement('div');
+        stepDiv.className = 'robot-step-pill p-3 rounded-xl bg-slate-900/90 border border-white/10 flex items-start justify-between gap-3 shadow-sm';
+        stepDiv.innerHTML = `
+          <div class="flex items-start gap-2.5">
+            <i class="fa-solid ${step.icon} mt-0.5 text-sm shrink-0"></i>
+            <div>
+              <div class="font-bold text-white text-xs">${step.title}</div>
+              <div class="text-[11px] text-slate-300 mt-0.5 leading-normal">${step.detail}</div>
+            </div>
+          </div>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-md shrink-0 ${step.badgeClass}">${step.badge}</span>
+        `;
+        terminalBody.appendChild(stepDiv);
 
-        const prog = document.getElementById('simProgressBar');
         if (prog) {
-          prog.style.width = `${((index + 1) / simulatedLogs.length) * 100}%`;
+          prog.style.width = `${((index + 1) / simulatedSteps.length) * 100}%`;
         }
 
-        if (index === simulatedLogs.length - 1) {
-          terminalStatus.innerText = 'Completado (1.8s)';
+        if (index === simulatedSteps.length - 1) {
+          terminalStatus.innerText = '¡Proceso Completo! (1.8s)';
           terminalStatus.className = 'text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold';
           btnRun.disabled = false;
           btnRun.classList.remove('opacity-50', 'cursor-not-allowed');
           if (downloadBox) downloadBox.classList.remove('hidden');
         }
-      }, item.delay);
+      }, step.delay);
     });
   });
 
@@ -2739,44 +2805,125 @@ function renderStudioExecutiveDiagnostic() {
   if (!narrativeContainer || !recommendationContainer) return;
 
   const domainNames = {
-    ventas: 'Comercial y Rentabilidad de Ventas',
-    logistica: 'Logística, Rutas y Tiempos de Entrega',
-    operaciones: 'Control de Producción y Órdenes de Trabajo',
-    stock: 'Gestión de Inventario y Valorización de Stock',
-    bancos: 'Conciliación de Cuentas Bancarias y Extractos',
-    cobranzas: 'Gestión de Cobranzas y Antigüedad de Saldos',
-    universal: 'Perfilado Exploratorio de Datos'
+    ventas: 'Comercial & Rentabilidad de Ventas',
+    logistica: 'Logística, Flota & Tiempos de Entrega',
+    operaciones: 'Control de Producción & Órdenes de Trabajo',
+    stock: 'Gestión de Inventario & Valorización de Stock',
+    bancos: 'Conciliación Bancaria & Extractos',
+    cobranzas: 'Gestión de Cobranzas & Cartera Vencida',
+    universal: 'Análisis Exploratorio de Datos'
   };
 
   const domainName = domainNames[studioActiveDomain] || 'Gestión Operativa';
 
+  const domainExecutiveInsights = {
+    ventas: {
+      alertText: 'Concentración de facturación en pocos clientes clave y dispersión de márgenes por descuentos manuales de vendedores.',
+      actionItems: [
+        'Fijar topes automatizados de descuento en el canal comercial para proteger margen neto.',
+        'Implementar ranking cruzado de productos más rentables vs más vendidos para potenciar venta cruzada.',
+        'Conectar las planillas de sucursales en un tablero de control diario para no esperar al cierre contable.'
+      ]
+    },
+    logistica: {
+      alertText: 'Desvíos en tiempos de entrega y sobrecostos por rutas no optimizadas que erosionan el margen del servicio.',
+      actionItems: [
+        'Estandarizar las planillas de despacho en 1 clic para detectar demoras en menos de 24 horas.',
+        'Monitorear costo de flete y entrega por zona geográfica para recalcular tarifas de envío.',
+        'Automatizar alertas de pedidos demorados directamente por WhatsApp a choferes y clientes.'
+      ]
+    },
+    operaciones: {
+      alertText: 'Cuellos de botella en etapas intermedias de producción y costo oculto por reprocesos / scrap operativo.',
+      actionItems: [
+        'Medir tiempo real de ciclo por orden de trabajo para detectar operarios o máquinas sobrecargadas.',
+        'Monitorear tasa de desperdicio diaria para corregir lotes defectuosos en el momento.',
+        'Sustituir las planillas manuales de taller por una app de carga simple en 1 clic.'
+      ]
+    },
+    stock: {
+      alertText: 'Capital de trabajo inmovilizado en artículos de baja rotación combinados con riesgo de quiebre en ítems de alta demanda.',
+      actionItems: [
+        'Liquidar o promocionar el stock inmovilizado hace más de 180 días para liberar capital de trabajo.',
+        'Activar órdenes de reposición automática cuando el stock cruza el umbral de reorden mínimo.',
+        'Auditar diferencias entre stock físico y stock teórico para eliminar pérdidas desconocidas.'
+      ]
+    },
+    bancos: {
+      alertText: 'Partidas descalzadas entre extractos bancarios y facturación que insumen horas de revisión manual a fin de mes.',
+      actionItems: [
+        'Automatizar el cruce de extractos Excel/PDF contra el sistema contable en menos de 2 segundos.',
+        'Detectar débitos bancarios, retenciones e intereses no imputados para evitar pagar impuestos de más.',
+        'Cerrar la posición de caja diaria sin esperar a fin de mes para prevenir faltantes.'
+      ]
+    },
+    cobranzas: {
+      alertText: 'Aumento en el plazo medio de cobro y riesgo de incobrabilidad en facturas con más de 60 días de vencidas.',
+      actionItems: [
+        'Priorizar la gestión sobre el top 20% de clientes que concentran el 80% de la deuda vencida.',
+        'Automatizar recordatorios de pago previos y posteriores al vencimiento por WhatsApp y correo.',
+        'Bloquear despachos futuros de forma automática a clientes con mora superior a 30 días.'
+      ]
+    },
+    universal: {
+      alertText: 'Formatos heterogéneos y tareas manuales repetitivas que consumen horas del equipo operativo sin agregar valor.',
+      actionItems: [
+        'Eliminar la carga manual y consolidación en Excel mediante un robot de automatización de 1 clic.',
+        'Centralizar las distintas fuentes de la empresa en un panel visual accesible desde celular y PC.',
+        'Estandarizar nombres, códigos y fechas para asegurar que cualquier reporte sea 100% confiable.'
+      ]
+    }
+  };
+
+  const domainInsight = domainExecutiveInsights[studioActiveDomain] || domainExecutiveInsights.universal;
+
   narrativeContainer.innerHTML = `
     <div class="p-4 rounded-2xl bg-slate-900 border border-white/10 space-y-2">
-      <div class="font-bold text-white flex items-center gap-2">
-        <i class="fa-solid fa-shield-check text-cyan-400"></i>
-        <span>1. Estado de Calidad & Normalización de la Información</span>
+      <div class="font-bold text-white flex items-center justify-between">
+        <span class="flex items-center gap-2">
+          <i class="fa-solid fa-shield-check text-cyan-400"></i>
+          <span>1. Estado de Calidad & Estandarización de Datos</span>
+        </span>
+        <span class="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
+          Salud: ${studioHealthScore}%
+        </span>
       </div>
       <p class="text-slate-300">
-        El dataset analizado contiene <strong>${studioCleanData.length} registros</strong> distribuidos en <strong>${studioColumns.length} campos</strong>. El motor AutoProfiler determinó una puntuación de salud de datos del <strong>${studioHealthScore}%</strong>. Se neutralizaron automáticamente las inconsistencias de formato de monedas, espacios y fechas mixtas, garantizando que el 100% de la información quede estandarizada y auditable.
+        El conjunto analizado contiene <strong>${studioCleanData.length} filas</strong> y <strong>${studioColumns.length} campos</strong>. El motor AutoProfiler neutralizó automáticamente las inconsistencias de formato (monedas, espacios en blanco y fechas heterogéneas), garantizando que el 100% de la información sea homogénea, limpia y auditable.
       </p>
     </div>
 
     <div class="p-4 rounded-2xl bg-slate-900 border border-white/10 space-y-2">
       <div class="font-bold text-white flex items-center gap-2">
-        <i class="fa-solid fa-chart-line text-emerald-400"></i>
-        <span>2. Diagnóstico de Negocio (${domainName})</span>
+        <i class="fa-solid fa-triangle-exclamation text-amber-400"></i>
+        <span>2. Fugas & Riesgos de Negocio Detectados (${domainName})</span>
       </div>
       <p class="text-slate-300">
-        Bajo el enfoque de <strong>${domainName}</strong>, se detectó una estructura propicia para la toma de decisiones gerenciales en tiempo real. La información permite aislar los factores de rentabilidad, tiempos de respuesta y puntos de fuga operativa que hoy suelen gestionarse de forma manual en planillas aisladas.
+        ${domainInsight.alertText} Esta situación representa un costo oculto en horas de personal administrativo y potenciales pérdidas de rentabilidad no controladas en el día a día.
       </p>
+    </div>
+
+    <div class="p-4 rounded-2xl bg-slate-900 border border-white/10 space-y-2.5">
+      <div class="font-bold text-white flex items-center gap-2">
+        <i class="fa-solid fa-bullseye text-emerald-400"></i>
+        <span>3. Plan de Acción Recomendado para la Dirección</span>
+      </div>
+      <ul class="space-y-2 text-xs sm:text-sm text-slate-300">
+        ${domainInsight.actionItems.map(item => `
+          <li class="flex items-start gap-2">
+            <i class="fa-solid fa-circle-check text-emerald-400 mt-1 shrink-0 text-xs"></i>
+            <span>${item}</span>
+          </li>
+        `).join('')}
+      </ul>
     </div>
   `;
 
   recommendationContainer.innerHTML = `
-    Para este volumen y tipología de datos, se recomienda implementar una arquitectura <strong>Data Scout Llave en Mano</strong>:
+    Para este volumen y tipología de información, se recomienda implementar una arquitectura <strong>Data Scout Llave en Mano</strong> en menos de 7 días:
     <br><br>
-    &bull; <strong>AutoTask 1-Click:</strong> Si el equipo pierde más de 4 horas semanales compilando estas planillas, desarrollamos el script en Python que ejecuta esta unificación en 1.8 segundos.<br>
-    &bull; <strong>CommandCenter 360:</strong> Si la dirección necesita visibilidad diaria de estos indicadores en celular y PC, estructuramos el tablero interactivo en Power BI con actualización automática sin cuotas mensuales.
+    &bull; <strong>AutoTask 1-Click:</strong> Si tu equipo pierde entre 4 y 15 horas semanales manipulando estas planillas, creamos el robot que realiza todo este cruce y validación en 2 segundos.<br>
+    &bull; <strong>CommandCenter 360:</strong> Si necesitas ver estos indicadores, alertas de margen y recomendaciones de IA todos los días en tu celular y PC, estructuramos tu tablero gerencial interactivo sin cuotas mensuales.
   `;
 }
 
