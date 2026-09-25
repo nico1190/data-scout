@@ -76,6 +76,16 @@ function logAuditEvent(eventType, details = {}) {
   // Keep last 250 events
   if (events.length > 250) events.pop();
   setStorage('datascout_audit_events', events);
+
+  // Reenviar evento a Google Analytics 4 si está disponible
+  if (typeof gtag === 'function') {
+    try {
+      gtag('event', eventType.toLowerCase(), {
+        event_category: 'DataScout_Interaction',
+        ...details
+      });
+    } catch (e) {}
+  }
 }
 
 function initTelemetryTracker() {
