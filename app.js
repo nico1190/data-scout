@@ -1,521 +1,45 @@
 /**
- * Data Scout Solutions - Master Interactive Controller + Telemetry & Admin Audit Suite
- * Controls: Dynamic Spotlights, FAQs Accordion, Chart.js Dashboard, AutoTask Simulator, SheetJS Real Excel Downloader, WhatsApp & Admin Suite
+ * Data Scout Solutions - Controlador interactivo de la web
+ * Spotlights, FAQ, dashboard Chart.js, simulador AutoTask, descarga Excel (SheetJS), Studio y WhatsApp.
+ * Medición: solo Google Analytics 4 (sin IP, sin datos personales, sin almacenamiento local de visitas).
  */
 
-// Global Security & State (PIN de Acceso Privado)
-const ADMIN_PIN = '80242480'; 
-const MAX_FAILED_ATTEMPTS = 2;
-const LOCKOUT_MINUTES = 30;
 const WHATSAPP_PHONE = '59891802402'; // Uruguay
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Telemetry & Analytics Tracking on Load
-  initTelemetryTracker();
-
-  // 2. Admin Audit Suite Modal & Keybindings
-  initAdminAuditSuite();
-
-  // 3. Dynamic Mouse Spotlight Effect for Cards
+  initWhatsappTracking();
   initSpotlightEffect();
-
-  // 4. Interactive FAQ Accordion
   initFAQAccordion();
-
-  // 5. Initialize Chart.js for CommandCenter 360
   initCommandCenterCharts();
-
-  // 6. Tab Switcher for Demos (AutoTask vs CommandCenter)
   initProductDemoTabs();
-
-  // 7. AutoTask 1-Click Python Simulator + Excel Download
   initAutoTaskSimulator();
-
-  // 8. Raw Input Data Preview Toggle
   initRawPreviewToggle();
-
-  // 9. WhatsApp Quote Form Integration
   initQuoteForm();
-
-  // 10. Theme Toggle & Mobile Nav
   initThemeAndNav();
-
-  // 11. Data Scout Studio (Universal Profiler & Multi-Domain Engine)
   initDataScoutStudio();
 });
 
 /* ==========================================================================
-   1. TELEMETRY & AUDIT TRACKER ENGINE
+   1. MEDICIÓN DE CONVERSIONES (Google Analytics 4)
+   Nunca se envían nombres, textos del formulario ni nombres de archivos.
    ========================================================================== */
-function getStorage(key, defaultValue = []) {
-  try {
-    const data = localStorage.getItem(key);
-    return data ? JSON.parse(data) : defaultValue;
-  } catch (e) {
-    return defaultValue;
-  }
-}
-
-function setStorage(key, value) {
-  try {
-    localStorage.setItem(key, JSON.stringify(value));
-  } catch (e) {
-    console.error('Storage error:', e);
-  }
-}
-
 function logAuditEvent(eventType, details = {}) {
-  const events = getStorage('datascout_audit_events', []);
-  const newEvent = {
-    id: 'EVT-' + Date.now(),
-    timestamp: new Date().toLocaleString('es-UY', { timeZone: 'America/Montevideo' }),
-    type: eventType,
-    details: details
-  };
-  events.unshift(newEvent);
-  // Keep last 250 events
-  if (events.length > 250) events.pop();
-  setStorage('datascout_audit_events', events);
-
-  // Reenviar evento a Google Analytics 4 si está disponible
-  if (typeof gtag === 'function') {
-    try {
-      gtag('event', eventType.toLowerCase(), {
-        event_category: 'DataScout_Interaction',
-        ...details
-      });
-    } catch (e) {}
-  }
+  if (typeof gtag !== 'function') return;
+  try {
+    gtag('event', eventType.toLowerCase(), {
+      event_category: 'DataScout_Interaction',
+      ...details
+    });
+  } catch (e) {}
 }
 
-function initTelemetryTracker() {
-  const isSessionTracked = sessionStorage.getItem('datascout_session_active');
-  const nowStr = new Date().toLocaleString('es-UY', { timeZone: 'America/Montevideo' });
-
-  // Detect Device, OS and Browser
-  const ua = navigator.userAgent;
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
-  const deviceType = isMobile ? '📱 Celular / Tablet' : '💻 Computadora';
-  
-  let os = 'Windows / Mac';
-  if (/Windows/i.test(ua)) os = 'Windows';
-  else if (/Macintosh|Mac OS X/i.test(ua)) os = 'macOS';
-  else if (/Android/i.test(ua)) os = 'Android';
-  else if (/iPhone|iPad/i.test(ua)) os = 'iOS';
-  else if (/Linux/i.test(ua)) os = 'Linux';
-
-  let browser = 'Navegador Web';
-  if (/Chrome/i.test(ua) && !/Edg/i.test(ua)) browser = 'Google Chrome';
-  else if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) browser = 'Safari';
-  else if (/Edg/i.test(ua)) browser = 'Microsoft Edge';
-  else if (/Firefox/i.test(ua)) browser = 'Mozilla Firefox';
-
-  const visitRecord = {
-    id: 'VIS-' + Date.now(),
-    timestamp: nowStr,
-    device: deviceType,
-    os: os,
-    browser: browser,
-    screen: `${window.screen.width}x${window.screen.height}`,
-    referrer: document.referrer ? new URL(document.referrer).hostname : 'Acceso Directo',
-    location: 'Cargando ubicación...',
-    ip: 'Consultando...'
-  };
-
-  // Only record new visit once per session
-  if (!isSessionTracked) {
-    sessionStorage.setItem('datascout_session_active', 'true');
-    const visits = getStorage('datascout_audit_visits', []);
-    visits.unshift(visitRecord);
-    if (visits.length > 250) visits.pop();
-    setStorage('datascout_audit_visits', visits);
-    logAuditEvent('NUEVA_VISITA', { device: deviceType, os: os, browser: browser });
-
-    // Fetch approximate location asynchronously
-    fetch('https://ipapi.co/json/')
-      .then(res => res.json())
-      .then(data => {
-        if (data && data.ip) {
-          const currentVisits = getStorage('datascout_audit_visits', []);
-          if (currentVisits.length > 0 && currentVisits[0].id === visitRecord.id) {
-            currentVisits[0].location = `${data.city || 'Ciudad'}, ${data.country_name || 'Uruguay'} (${data.country_code || 'UY'})`;
-            currentVisits[0].ip = data.ip;
-            setStorage('datascout_audit_visits', currentVisits);
-          }
-        }
-      })
-      .catch(() => {
-        // Fallback if blocked
-        const currentVisits = getStorage('datascout_audit_visits', []);
-        if (currentVisits.length > 0 && currentVisits[0].id === visitRecord.id) {
-          currentVisits[0].location = 'Uruguay / Región';
-          currentVisits[0].ip = 'Anónimo';
-          setStorage('datascout_audit_visits', currentVisits);
-        }
-      });
-  }
-
-  // Track Floating WhatsApp clicks
+function initWhatsappTracking() {
   const floatWa = document.getElementById('floatingWhatsapp');
   if (floatWa) {
     floatWa.addEventListener('click', () => {
       logAuditEvent('CLIC_WHATSAPP_FLOTANTE', { action: 'Chat Directo' });
     });
   }
-}
-
-/* ==========================================================================
-   2. ADMIN AUDIT SUITE & SECURE PIN PASS CONTROLLER (2-ATTEMPT LOCKOUT)
-   ========================================================================== */
-function getLockoutMinutesRemaining() {
-  const lockoutTimestamp = localStorage.getItem('datascout_admin_lockout_until');
-  if (lockoutTimestamp) {
-    const remainingMs = parseInt(lockoutTimestamp) - Date.now();
-    if (remainingMs > 0) {
-      return Math.ceil(remainingMs / (60 * 1000));
-    } else {
-      localStorage.removeItem('datascout_admin_lockout_until');
-      localStorage.removeItem('datascout_admin_failed_count');
-    }
-  }
-  return 0;
-}
-
-function initAdminAuditSuite() {
-  const btnOpenAdmin = document.getElementById('btnOpenAdmin');
-  const btnCloseAdmin = document.getElementById('btnCloseAdminModal');
-  const adminModal = document.getElementById('adminModal');
-  const adminLoginForm = document.getElementById('adminLoginForm');
-  const adminPinInput = document.getElementById('adminPinInput');
-  const adminLoginError = document.getElementById('adminLoginError');
-  const adminLockoutWarning = document.getElementById('adminLockoutWarning');
-  const lockoutMsgText = document.getElementById('lockoutMsgText');
-  const btnAdminSubmit = document.getElementById('btnAdminSubmit');
-  const adminLoginView = document.getElementById('adminLoginView');
-  const adminDashboardView = document.getElementById('adminDashboardView');
-  const btnLogoutAdmin = document.getElementById('btnLogoutAdmin');
-  const btnClearAuditData = document.getElementById('btnClearAuditData');
-  const btnExportAuditExcel = document.getElementById('btnExportAuditExcel');
-
-  // Check URL hash or hotkey
-  if (window.location.hash === '#admin') {
-    openAdminModal();
-  }
-
-  window.addEventListener('keydown', (e) => {
-    // Hotkey: Ctrl + Shift + A
-    if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
-      e.preventDefault();
-      openAdminModal();
-    }
-  });
-
-  if (btnOpenAdmin) {
-    btnOpenAdmin.addEventListener('click', () => openAdminModal());
-  }
-
-  if (btnCloseAdmin) {
-    btnCloseAdmin.addEventListener('click', () => closeAdminModal());
-  }
-
-  // Close modal when clicking outside
-  if (adminModal) {
-    adminModal.addEventListener('click', (e) => {
-      if (e.target === adminModal) closeAdminModal();
-    });
-  }
-
-  function openAdminModal() {
-    if (!adminModal) return;
-    adminModal.classList.remove('hidden');
-    const isAuth = sessionStorage.getItem('datascout_admin_auth') === 'true';
-    if (isAuth) {
-      showDashboardView();
-    } else {
-      showLoginView();
-    }
-  }
-
-  function closeAdminModal() {
-    if (!adminModal) return;
-    adminModal.classList.add('hidden');
-    if (window.location.hash === '#admin') {
-      history.pushState('', document.title, window.location.pathname + window.location.search);
-    }
-  }
-
-  function showLoginView() {
-    if (adminLoginView) adminLoginView.classList.remove('hidden');
-    if (adminDashboardView) adminDashboardView.classList.add('hidden');
-    if (adminLoginError) adminLoginError.classList.add('hidden');
-
-    const minutesRemaining = getLockoutMinutesRemaining();
-    if (minutesRemaining > 0) {
-      if (adminLockoutWarning) adminLockoutWarning.classList.remove('hidden');
-      if (lockoutMsgText) lockoutMsgText.innerText = `Acceso bloqueado por seguridad (${minutesRemaining} min restantes).`;
-      if (adminPinInput) {
-        adminPinInput.disabled = true;
-        adminPinInput.value = '';
-      }
-      if (btnAdminSubmit) btnAdminSubmit.disabled = true;
-    } else {
-      if (adminLockoutWarning) adminLockoutWarning.classList.add('hidden');
-      if (adminPinInput) {
-        adminPinInput.disabled = false;
-        adminPinInput.value = '';
-        setTimeout(() => adminPinInput.focus(), 150);
-      }
-      if (btnAdminSubmit) btnAdminSubmit.disabled = false;
-    }
-  }
-
-  function showDashboardView() {
-    if (adminLoginView) adminLoginView.classList.add('hidden');
-    if (adminDashboardView) adminDashboardView.classList.remove('hidden');
-    renderAdminDashboard();
-  }
-
-  if (adminLoginForm) {
-    adminLoginForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-
-      const minutesRemaining = getLockoutMinutesRemaining();
-      if (minutesRemaining > 0) {
-        if (adminLockoutWarning) adminLockoutWarning.classList.remove('hidden');
-        if (lockoutMsgText) lockoutMsgText.innerText = `Acceso bloqueado por seguridad (${minutesRemaining} min restantes).`;
-        return;
-      }
-
-      const enteredPin = adminPinInput.value.trim();
-
-      if (enteredPin === ADMIN_PIN) {
-        // Successful login: reset failed attempts
-        localStorage.removeItem('datascout_admin_failed_count');
-        localStorage.removeItem('datascout_admin_lockout_until');
-        sessionStorage.setItem('datascout_admin_auth', 'true');
-        showDashboardView();
-      } else {
-        // Failed login: increment failed count
-        let failedCount = parseInt(localStorage.getItem('datascout_admin_failed_count') || '0') + 1;
-        localStorage.setItem('datascout_admin_failed_count', failedCount.toString());
-
-        if (failedCount >= MAX_FAILED_ATTEMPTS) {
-          const lockoutUntil = Date.now() + (LOCKOUT_MINUTES * 60 * 1000);
-          localStorage.setItem('datascout_admin_lockout_until', lockoutUntil.toString());
-          if (adminLoginError) adminLoginError.classList.add('hidden');
-          if (adminLockoutWarning) adminLockoutWarning.classList.remove('hidden');
-          if (lockoutMsgText) lockoutMsgText.innerText = `Acceso bloqueado por seguridad (${LOCKOUT_MINUTES} min).`;
-          if (adminPinInput) {
-            adminPinInput.disabled = true;
-            adminPinInput.value = '';
-          }
-          if (btnAdminSubmit) btnAdminSubmit.disabled = true;
-          logAuditEvent('BLOQUEO_SEGURIDAD_ADMIN', { reason: '2 intentos fallidos' });
-        } else {
-          if (adminLoginError) {
-            adminLoginError.innerText = `PIN Pass incorrecto (1 intento restante antes del bloqueo).`;
-            adminLoginError.classList.remove('hidden');
-          }
-          if (adminPinInput) {
-            adminPinInput.value = '';
-            adminPinInput.focus();
-          }
-        }
-      }
-    });
-  }
-
-  if (btnLogoutAdmin) {
-    btnLogoutAdmin.addEventListener('click', () => {
-      sessionStorage.removeItem('datascout_admin_auth');
-      showLoginView();
-    });
-  }
-
-  if (btnClearAuditData) {
-    btnClearAuditData.addEventListener('click', () => {
-      if (confirm('¿Estás seguro de que deseas vaciar los registros de auditoría locales?')) {
-        localStorage.removeItem('datascout_audit_visits');
-        localStorage.removeItem('datascout_audit_leads');
-        localStorage.removeItem('datascout_audit_events');
-        renderAdminDashboard();
-      }
-    });
-  }
-
-  if (btnExportAuditExcel) {
-    btnExportAuditExcel.addEventListener('click', () => {
-      exportAuditToExcel();
-    });
-  }
-
-  // Admin Tabs
-  initAdminDashboardTabs();
-}
-
-function initAdminDashboardTabs() {
-  const tabLeads = document.getElementById('tabAdminLeads');
-  const tabVisits = document.getElementById('tabAdminVisits');
-  const tabLogs = document.getElementById('tabAdminLogs');
-  const contentLeads = document.getElementById('contentAdminLeads');
-  const contentVisits = document.getElementById('contentAdminVisits');
-  const contentLogs = document.getElementById('contentAdminLogs');
-
-  if (!tabLeads || !tabVisits || !tabLogs) return;
-
-  function resetTabs() {
-    [tabLeads, tabVisits, tabLogs].forEach(t => {
-      t.className = 'admin-tab-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5 bg-slate-800';
-    });
-    [contentLeads, contentVisits, contentLogs].forEach(c => {
-      if (c) c.classList.add('hidden');
-    });
-  }
-
-  tabLeads.addEventListener('click', () => {
-    resetTabs();
-    tabLeads.className = 'admin-tab-btn active px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-cyan-600 text-white';
-    if (contentLeads) contentLeads.classList.remove('hidden');
-  });
-
-  tabVisits.addEventListener('click', () => {
-    resetTabs();
-    tabVisits.className = 'admin-tab-btn active px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-cyan-600 text-white';
-    if (contentVisits) contentVisits.classList.remove('hidden');
-  });
-
-  tabLogs.addEventListener('click', () => {
-    resetTabs();
-    tabLogs.className = 'admin-tab-btn active px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-cyan-600 text-white';
-    if (contentLogs) contentLogs.classList.remove('hidden');
-  });
-}
-
-function renderAdminDashboard() {
-  const visits = getStorage('datascout_audit_visits', []);
-  const leads = getStorage('datascout_audit_leads', []);
-  const events = getStorage('datascout_audit_events', []);
-
-  // Update Counters
-  const metricVisits = document.getElementById('metricTotalVisits');
-  const metricLeads = document.getElementById('metricTotalLeads');
-  const metricDownloads = document.getElementById('metricTotalDownloads');
-  const metricWhatsApp = document.getElementById('metricTotalWhatsAppClicks');
-  const countLeadsBadge = document.getElementById('countLeadsBadge');
-  const countVisitsBadge = document.getElementById('countVisitsBadge');
-
-  const downloadsCount = events.filter(e => e.type === 'DESCARGA_EXCEL').length;
-  const waCount = events.filter(e => e.type.includes('WHATSAPP') || e.type.includes('COTIZACION')).length;
-
-  if (metricVisits) metricVisits.innerText = visits.length;
-  if (metricLeads) metricLeads.innerText = leads.length;
-  if (metricDownloads) metricDownloads.innerText = downloadsCount;
-  if (metricWhatsApp) metricWhatsApp.innerText = waCount;
-  if (countLeadsBadge) countLeadsBadge.innerText = leads.length;
-  if (countVisitsBadge) countVisitsBadge.innerText = visits.length;
-
-  // Render Leads Table
-  const tableBodyLeads = document.getElementById('tableBodyLeads');
-  if (tableBodyLeads) {
-    if (leads.length === 0) {
-      tableBodyLeads.innerHTML = `
-        <tr>
-          <td colspan="6" class="p-6 text-center text-slate-500 font-mono text-xs">
-            No hay solicitudes registradas aún. Las cotizaciones que completen los clientes aparecerán aquí automáticamente.
-          </td>
-        </tr>
-      `;
-    } else {
-      tableBodyLeads.innerHTML = leads.map(item => `
-        <tr class="hover:bg-white/5 transition">
-          <td class="p-3 font-mono text-[11px] text-slate-400 whitespace-nowrap">${item.timestamp}</td>
-          <td class="p-3 font-bold text-white">${item.name}</td>
-          <td class="p-3 text-slate-300">${item.industry || 'No especificado'}</td>
-          <td class="p-3 text-cyan-300 font-medium">${item.service}</td>
-          <td class="p-3 text-slate-400 max-w-xs truncate" title="${item.description}">${item.description}</td>
-          <td class="p-3 text-center">
-            <a href="https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent('Hola ' + item.name + ', recibí tu solicitud para ' + item.service)}" target="_blank" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500 hover:text-slate-950 font-bold text-[10px] transition inline-flex items-center gap-1">
-              <i class="fa-brands fa-whatsapp"></i> Chat
-            </a>
-          </td>
-        </tr>
-      `).join('');
-    }
-  }
-
-  // Render Visits Table
-  const tableBodyVisits = document.getElementById('tableBodyVisits');
-  if (tableBodyVisits) {
-    if (visits.length === 0) {
-      tableBodyVisits.innerHTML = `
-        <tr>
-          <td colspan="6" class="p-6 text-center text-slate-500 font-mono text-xs">
-            No hay visitas registradas aún.
-          </td>
-        </tr>
-      `;
-    } else {
-      tableBodyVisits.innerHTML = visits.map(item => `
-        <tr class="hover:bg-white/5 transition">
-          <td class="p-3 text-slate-400 whitespace-nowrap">${item.timestamp}</td>
-          <td class="p-3 text-emerald-400 font-bold">${item.location}</td>
-          <td class="p-3 text-slate-200">${item.device} (${item.os})</td>
-          <td class="p-3 text-cyan-300">${item.browser}</td>
-          <td class="p-3 text-slate-400">${item.screen}</td>
-          <td class="p-3 text-slate-400">${item.referrer}</td>
-        </tr>
-      `).join('');
-    }
-  }
-
-  // Render Logs Terminal
-  const terminalLogs = document.getElementById('terminalAdminLogs');
-  if (terminalLogs) {
-    if (events.length === 0) {
-      terminalLogs.innerHTML = `<p class="text-slate-500"># Esperando eventos en tiempo real...</p>`;
-    } else {
-      terminalLogs.innerHTML = events.map(e => `
-        <div class="flex items-start gap-2 py-0.5">
-          <span class="text-slate-500">[${e.timestamp}]</span>
-          <span class="text-cyan-400 font-bold">${e.type}:</span>
-          <span class="text-slate-300">${JSON.stringify(e.details)}</span>
-        </div>
-      `).join('');
-    }
-  }
-}
-
-function exportAuditToExcel() {
-  if (typeof XLSX === 'undefined') {
-    alert('Generador de Excel cargando... Por favor intenta en un momento.');
-    return;
-  }
-
-  const visits = getStorage('datascout_audit_visits', []);
-  const leads = getStorage('datascout_audit_leads', []);
-  const events = getStorage('datascout_audit_events', []);
-
-  const wb = XLSX.utils.book_new();
-
-  // Sheet 1: Leads
-  const wsLeads = XLSX.utils.json_to_sheet(leads.length ? leads : [{ "Estado": "Sin peticiones aún" }]);
-  XLSX.utils.book_append_sheet(wb, wsLeads, "Peticiones de Clientes");
-
-  // Sheet 2: Visits
-  const wsVisits = XLSX.utils.json_to_sheet(visits.length ? visits : [{ "Estado": "Sin visitas registradas" }]);
-  XLSX.utils.book_append_sheet(wb, wsVisits, "Registro de Visitas");
-
-  // Sheet 3: Events
-  const formattedEvents = events.map(e => ({
-    "ID Evento": e.id,
-    "Fecha y Hora": e.timestamp,
-    "Tipo de Evento": e.type,
-    "Detalle": JSON.stringify(e.details)
-  }));
-  const wsEvents = XLSX.utils.json_to_sheet(formattedEvents.length ? formattedEvents : [{ "Estado": "Sin eventos" }]);
-  XLSX.utils.book_append_sheet(wb, wsEvents, "Bitácora de Interacciones");
-
-  XLSX.writeFile(wb, "Auditoria_DataScout_Trafico_y_Leads.xlsx");
 }
 
 /* ==========================================================================
@@ -578,7 +102,7 @@ const branchData = {
       branchBadge: '🏢 Vista: Todas las Sucursales',
       diagnosis: 'Facturación global sólida en $48.250 USD con un margen de 32.8%. El negocio tiene un ritmo positivo (+14.2% vs mes anterior), pero con fuerte disparidad de rentabilidad entre locales.',
       alerts: 'En Sucursal Norte el margen cayó al 29.4% por exceso de descuentos no autorizados. A su vez, 3 productos de alta rotación están a 4 días de quebrar stock.',
-      action: '1) Limitar descuentos en Norte al 10% (recuperas ~$1.800 USD/mes). 2) Replicar la venta cruzada de Central. 3) Reponer stock de los 3 productos críticos.'
+      action: '1) Limitar descuentos en Norte al 10% (recuperás ~$1.800 USD/mes). 2) Replicar la venta cruzada de Central. 3) Reponer stock de los 3 productos críticos.'
     }
   },
   central: {
@@ -751,7 +275,7 @@ function initCommandCenterCharts() {
       document.getElementById('kpiTicket').innerText = data.ticket;
       document.getElementById('kpiStock').innerText = data.stock;
 
-      // Actualizar Asistente IA en tiempo real
+      // Actualizar resumen ejecutivo según el filtro
       const aiBadge = document.getElementById('aiBranchBadge');
       const aiDiag = document.getElementById('aiInsightDiagnosis');
       const aiAlerts = document.getElementById('aiInsightAlerts');
@@ -827,7 +351,7 @@ function initAutoTaskSimulator() {
       badge: 'Corregido',
       badgeClass: 'bg-amber-500/15 text-amber-400 border border-amber-500/30',
       title: 'Paso 2: Corrección automática de errores humanos',
-      detail: '3 precios escritos como texto con signos "$" y espacios fueron convertidos a número real. 0% de corrupción.'
+      detail: '3 precios escritos como texto con signos "$" y espacios fueron convertidos a número real sin perder datos.'
     },
     {
       delay: 1350,
@@ -900,7 +424,7 @@ function initAutoTaskSimulator() {
 
 function generateAndDownloadRealExcel() {
   if (typeof XLSX === 'undefined') {
-    alert('Generador de Excel cargando... Por favor intenta en un momento.');
+    alert('Generador de Excel cargando... Probá de nuevo en un momento.');
     return;
   }
 
@@ -1031,7 +555,7 @@ function generateAndDownloadRealExcel() {
     {
       "Paso": 4,
       "Acción": "Cálculo de Rentabilidad",
-      "Detalle": "IVA (21%) y Margen Neto calculados matemáticamente con 100% de precisión",
+      "Detalle": "IVA (21%) y Margen Neto calculados automáticamente por fórmula",
       "Estado": "OK"
     },
     {
@@ -1112,21 +636,8 @@ function initQuoteForm() {
     const industry = document.getElementById('contactIndustry').value.trim() || 'No especificado';
     const service = document.getElementById('contactService').value;
     const description = document.getElementById('contactDescription').value.trim();
-    const timestamp = new Date().toLocaleString('es-UY', { timeZone: 'America/Montevideo' });
 
-    // 1. SAVE LEAD TO LOCAL AUDIT STORE
-    const leads = getStorage('datascout_audit_leads', []);
-    const newLead = {
-      id: 'LEAD-' + Date.now(),
-      timestamp: timestamp,
-      name: name,
-      industry: industry,
-      service: service,
-      description: description
-    };
-    leads.unshift(newLead);
-    setStorage('datascout_audit_leads', leads);
-    logAuditEvent('NUEVA_COTIZACION_LEAD', { client: name, service: service, industry: industry });
+    logAuditEvent('NUEVA_COTIZACION_LEAD', { service: service });
 
     // 2. DISPATCH TO WHATSAPP
     const message = `👋 *Hola! Vengo desde la web de Data Scout:*\n\n` +
@@ -1592,7 +1103,6 @@ function processStudioData(rawRows, sourceName) {
 
   // 6. Log Telemetry
   logAuditEvent('STUDIO_DATA_ANALYZE', {
-    source: sourceName,
     rows: rawRows.length,
     cols: studioColumns.length,
     domain: studioActiveDomain,
@@ -2041,7 +1551,7 @@ function renderStudioDomainDashboard(domain) {
 
     alerts = [
       `💰 <strong>Facturación Consolidada:</strong> Se procesaron $${Math.round(totalRevenue).toLocaleString()} USD en ${opsCount} transacciones comerciales.`,
-      `⚠️ <strong>Alertas de Margen:</strong> Se detectaron ${lowMarginCount} operaciones con margen bruto menor al 15%, recomendando revisar listas de precios.`,
+      (lowMarginCount > 0 ? `⚠️ <strong>Alertas de Margen:</strong> Se detectaron ${lowMarginCount} operaciones con margen bruto menor al 15%. Conviene revisar listas de precios y descuentos.` : `✅ <strong>Margen:</strong> Ninguna operación quedó por debajo del 15% de margen bruto.`),
       `🏆 <strong>Canal Líder:</strong> La sucursal con mayor volumen concentró más del 38% del ingreso total.`
     ];
 
@@ -2583,7 +2093,7 @@ function renderStudioDomainDashboard(domain) {
     alerts = [
       `🔬 <strong>Análisis Exploratorio Universal:</strong> Estructura de ${studioCleanData.length} registros y ${studioColumns.length} columnas procesada exitosamente.`,
       `✨ <strong>Calidad de Datos:</strong> Nivel de integridad del ${studioHealthScore}%, apto para la construcción de reportes y tableros a medida.`,
-      `📊 <strong>Flexibilidad:</strong> Puedes alternar entre las pestañas superiores para revisar el diccionario y los datos normalizados.`
+      `📊 <strong>Flexibilidad:</strong> Podés alternar entre las pestañas superiores para revisar el diccionario y los datos normalizados.`
     ];
 
     if (mainCanvas) {
@@ -2899,17 +2409,17 @@ function renderStudioExecutiveDiagnostic() {
         </span>
       </div>
       <p class="text-slate-300">
-        El conjunto analizado contiene <strong>${studioCleanData.length} filas</strong> y <strong>${studioColumns.length} campos</strong>. El motor AutoProfiler neutralizó automáticamente las inconsistencias de formato (monedas, espacios en blanco y fechas heterogéneas), garantizando que el 100% de la información sea homogénea, limpia y auditable.
+        El conjunto analizado contiene <strong>${studioCleanData.length} filas</strong> y <strong>${studioColumns.length} campos</strong>. El motor AutoProfiler normalizó automáticamente los formatos (monedas, espacios en blanco y fechas) y te muestra en el diccionario qué corrigió en cada columna, para que puedas auditarlo.
       </p>
     </div>
 
     <div class="p-4 rounded-2xl bg-slate-900 border border-white/10 space-y-2">
       <div class="font-bold text-white flex items-center gap-2">
         <i class="fa-solid fa-triangle-exclamation text-amber-400"></i>
-        <span>2. Fugas & Riesgos de Negocio Detectados (${domainName})</span>
+        <span>2. Riesgos típicos a revisar en datos de ${domainName}</span>
       </div>
       <p class="text-slate-300">
-        ${domainInsight.alertText} Esta situación representa un costo oculto en horas de personal administrativo y potenciales pérdidas de rentabilidad no controladas en el día a día.
+        En empresas con este tipo de datos solemos encontrar: ${domainInsight.alertText.charAt(0).toLowerCase() + domainInsight.alertText.slice(1)} Vale la pena confirmarlo con tus números completos en el diagnóstico.
       </p>
     </div>
 
@@ -2930,10 +2440,10 @@ function renderStudioExecutiveDiagnostic() {
   `;
 
   recommendationContainer.innerHTML = `
-    Para este volumen y tipología de información, se recomienda implementar una arquitectura <strong>Data Scout Llave en Mano</strong> en menos de 7 días:
+    Para este volumen y tipología de información, encaja una solución <strong>Data Scout llave en mano</strong>, con precio y plazo cerrados desde el diagnóstico:
     <br><br>
-    &bull; <strong>AutoTask 1-Click:</strong> Si tu equipo pierde entre 4 y 15 horas semanales manipulando estas planillas, creamos el robot que realiza todo este cruce y validación en 2 segundos.<br>
-    &bull; <strong>CommandCenter 360:</strong> Si necesitas ver estos indicadores, alertas de margen y recomendaciones de IA todos los días en tu celular y PC, estructuramos tu tablero gerencial interactivo sin cuotas mensuales.
+    &bull; <strong>AutoTask 1-Click:</strong> Si tu equipo pierde entre 4 y 15 horas semanales manipulando estas planillas, creamos el robot que hace todo este cruce y validación en segundos.<br>
+    &bull; <strong>CommandCenter 360:</strong> Si necesitás ver estos indicadores, alertas de margen y un resumen automático todos los días en tu celular y PC, estructuramos tu tablero gerencial interactivo sin cuotas mensuales.
   `;
 }
 
@@ -2993,7 +2503,6 @@ function exportStudioExcel() {
     XLSX.writeFile(wb, fileName);
 
     logAuditEvent('STUDIO_EXCEL_DOWNLOAD', {
-      fileName,
       domain: studioActiveDomain,
       rows: studioCleanData.length
     });
